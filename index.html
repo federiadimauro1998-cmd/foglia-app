@@ -1,0 +1,2076 @@
+<title>Foglia</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Foglia" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="theme-color" content="#1f5a40" />
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='40' fill='%231f5a40'/%3E%3Ctext x='90' y='125' font-size='108' text-anchor='middle'%3E%F0%9F%AA%B4%3C/text%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&display=swap" />
+
+<style>
+  :root {
+    --ground: #e3ebd9;
+    --surface: #ffffff;
+    --surface-2: #f7f9f3;
+    --ink: #1a2a20;
+    --muted: #67766b;
+    --faint: #9aa89c;
+    --primary: #2f7d5b;
+    --primary-deep: #1f5a40;
+    --primary-soft: #e2efe6;
+    --hero-a: #1f5a40;
+    --hero-b: #2f7d5b;
+    --water: #2e8ba6;
+    --water-soft: #dcedf2;
+    --warn: #c0662f;
+    --warn-soft: #f6e6da;
+    --border: #e3e9dd;
+    --border-strong: #d3dccb;
+    --shadow: 0 1px 2px rgba(26,42,32,.05), 0 8px 24px rgba(26,42,32,.06);
+    --shadow-lift: 0 6px 16px rgba(26,42,32,.10), 0 24px 48px rgba(26,42,32,.14);
+    --r-lg: 22px;
+    --r-md: 16px;
+    --r-sm: 11px;
+    --serif: "Fraunces", Georgia, "Times New Roman", serif;
+    --sans: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  :root:not([data-theme="light"]) {
+    @media (prefers-color-scheme: dark) {
+      --ground: #0e1310;
+      --surface: #171d18;
+      --surface-2: #1d251f;
+      --ink: #e9efe6;
+      --muted: #9fae9f;
+      --faint: #72806f;
+      --primary: #56b487;
+      --primary-deep: #7fcfa5;
+      --primary-soft: #1c3327;
+      --water: #59b6d2;
+      --water-soft: #16303a;
+      --warn: #e08a5a;
+      --warn-soft: #3a2818;
+      --border: #29322a;
+      --border-strong: #384338;
+      --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+      --shadow-lift: 0 6px 16px rgba(0,0,0,.5), 0 24px 48px rgba(0,0,0,.55);
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #0e1310;
+    --surface: #171d18;
+    --surface-2: #1d251f;
+    --ink: #e9efe6;
+    --muted: #9fae9f;
+    --faint: #72806f;
+    --primary: #56b487;
+    --primary-deep: #7fcfa5;
+    --primary-soft: #1c3327;
+    --water: #59b6d2;
+    --water-soft: #16303a;
+    --hero-a: #143d2c;
+    --hero-b: #23684b;
+    --warn: #e08a5a;
+    --warn-soft: #3a2818;
+    --border: #29322a;
+    --border-strong: #384338;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+    --shadow-lift: 0 6px 16px rgba(0,0,0,.5), 0 24px 48px rgba(0,0,0,.55);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  html {
+    height: 100%;
+    -webkit-text-size-adjust: 100%;
+    overscroll-behavior-y: none;
+  }
+  body {
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--sans);
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.45;
+    overflow-x: hidden;
+    overscroll-behavior-y: none;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  button { font-family: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  input, select { font-family: inherit; -webkit-tap-highlight-color: transparent; }
+  :focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; border-radius: 6px; }
+
+  /* Phone shell */
+  .app {
+    max-width: 468px;
+    margin: 0 auto;
+    min-height: 100vh;
+    min-height: 100dvh;
+    background: var(--ground);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 0 0 1px var(--border);
+  }
+  @media (min-width: 520px) {
+    body { padding: 22px 0; }
+    .app { min-height: calc(100dvh - 44px); border-radius: 30px; overflow: hidden; box-shadow: var(--shadow-lift); }
+  }
+
+  /* Header */
+  .top {
+    padding: calc(env(safe-area-inset-top) + 20px) 22px 14px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .brand { display: flex; align-items: center; gap: 9px; }
+  .brand .leaf { font-size: 22px; line-height: 1; transform: translateY(-1px); }
+  .brand h1 {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 25px;
+    letter-spacing: -.01em;
+    margin: 0;
+  }
+  .top .sub {
+    font-size: 12.5px;
+    color: var(--muted);
+    margin: 2px 0 0 31px;
+  }
+  .theme-btn {
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--muted);
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    font-size: 16px;
+    display: grid; place-items: center;
+    flex: none;
+    transition: transform .15s ease;
+  }
+  .theme-btn:active { transform: scale(.92); }
+
+  .headwrap { display: flex; flex-direction: column; }
+
+  /* Scroll area */
+  .screen {
+    flex: 1;
+    overflow-y: auto;
+    padding: 6px 16px 120px;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-y: contain;
+  }
+  .screen.hidden { display: none; }
+
+  .section-label {
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    color: var(--faint);
+    font-weight: 600;
+    margin: 20px 6px 10px;
+  }
+
+  /* Today hero card */
+  .hero, .brand-card {
+    background: linear-gradient(150deg, var(--hero-a), var(--hero-b));
+    color: #fff;
+    border-radius: var(--r-lg);
+    padding: 20px 20px 18px;
+    margin: 8px 0 4px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::after, .brand-card::after {
+    content: "";
+    position: absolute;
+    right: -30px; top: -30px;
+    width: 150px; height: 150px;
+    background: radial-gradient(circle, rgba(255,255,255,.16), transparent 70%);
+  }
+  .brand-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 0;
+  }
+  .brand-card .brand { display: flex; align-items: center; gap: 9px; }
+  .brand-card .brand h1 {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 25px;
+    letter-spacing: -.01em;
+    margin: 0;
+    color: #fff;
+    position: relative;
+  }
+  .brand-card .leaf { font-size: 22px; line-height: 1; transform: translateY(-1px); position: relative; }
+  .brand-card .sub {
+    color: rgba(255,255,255,.88);
+    position: relative;
+  }
+  .brand-card .theme-btn {
+    background: rgba(255,255,255,.16);
+    border-color: rgba(255,255,255,.3);
+    color: #fff;
+    position: relative;
+    z-index: 1;
+    flex: none;
+  }
+  .hero .date { font-size: 12.5px; opacity: .85; text-transform: capitalize; }
+  .hero .big {
+    font-family: var(--serif);
+    font-size: 30px;
+    font-weight: 600;
+    line-height: 1.1;
+    margin: 8px 0 4px;
+    letter-spacing: -.01em;
+    position: relative;
+  }
+  .hero .msg { font-size: 13.5px; opacity: .9; position: relative; }
+
+  /* Plant card */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    box-shadow: var(--shadow);
+  }
+  .p-list { display: flex; flex-direction: column; gap: 11px; }
+
+  /* Room grouping */
+  .room-block { margin-bottom: 22px; }
+  .room-head {
+    display: flex; align-items: center; gap: 9px;
+    margin: 0 4px 11px;
+  }
+  .room-head .rem { font-size: 19px; line-height: 1; }
+  .room-head .rname { font-family: var(--serif); font-weight: 600; font-size: 18px; color: var(--ink); }
+  .room-head .rcount {
+    font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums;
+    background: var(--surface-2); border: 1px solid var(--border);
+    padding: 2px 9px; border-radius: 999px; margin-left: 2px;
+  }
+  .room-head .radd {
+    margin-left: auto; border: 1px solid var(--border); background: var(--surface);
+    color: var(--primary); width: 30px; height: 30px; border-radius: 9px;
+    font-size: 18px; display: grid; place-items: center; flex: none;
+  }
+  .room-empty {
+    font-size: 13px; color: var(--faint);
+    background: var(--surface-2); border: 1px dashed var(--border-strong);
+    border-radius: var(--r-md); padding: 14px; text-align: center;
+  }
+  .piante-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    margin: 4px 4px 14px; gap: 10px;
+  }
+  .piante-bar .pt { font-family: var(--serif); font-size: 15px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .rooms-btn {
+    border: 1px solid var(--border-strong); background: var(--surface);
+    color: var(--ink); font-size: 13px; font-weight: 600;
+    padding: 8px 13px; border-radius: 999px;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  /* Room manager rows */
+  .room-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 0; border-bottom: 1px solid var(--border);
+  }
+  .room-row .rr-em { font-size: 20px; width: 30px; text-align: center; flex: none; }
+  .room-row input.rr-name {
+    flex: 1; border: 1px solid var(--border-strong); background: var(--surface-2);
+    border-radius: 10px; padding: 9px 11px; font-size: 16px; color: var(--ink);
+  }
+  .room-row .rr-del { border: none; background: none; color: var(--warn); font-size: 17px; padding: 6px; flex: none; }
+  .room-row .rr-count { font-size: 11.5px; color: var(--faint); flex: none; }
+  .p-card {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 13px 14px;
+    text-align: left;
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    box-shadow: var(--shadow);
+    transition: transform .12s ease;
+  }
+  .p-card:active { transform: scale(.985); }
+  .avatar {
+    width: 50px; height: 50px;
+    border-radius: 14px;
+    display: grid; place-items: center;
+    font-size: 25px;
+    flex: none;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+  }
+  .p-info { flex: 1; min-width: 0; }
+  .p-name {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 17px;
+    line-height: 1.15;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .p-species {
+    font-size: 12.5px;
+    color: var(--muted);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    margin-top: 1px;
+  }
+  .status {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11.5px;
+    font-weight: 600;
+    padding: 4px 9px;
+    border-radius: 999px;
+    margin-top: 6px;
+    line-height: 1;
+  }
+  .status .dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  .s-ok { color: var(--primary-deep); background: var(--primary-soft); }
+  .s-today { color: var(--water); background: var(--water-soft); }
+  .s-late { color: var(--warn); background: var(--warn-soft); }
+
+  .p-right { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; flex: none; }
+  .water-btn {
+    border: none;
+    background: var(--water);
+    color: #fff;
+    width: 42px; height: 42px;
+    border-radius: 13px;
+    font-size: 19px;
+    display: grid; place-items: center;
+    transition: transform .12s ease, background .2s;
+    box-shadow: 0 3px 8px rgba(46,139,166,.3);
+  }
+  .water-btn:active { transform: scale(.88); }
+  .water-btn.done { background: var(--primary); box-shadow: none; }
+
+  .count-pill {
+    font-size: 12px; color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Empty state */
+  .empty {
+    text-align: center;
+    padding: 46px 24px;
+    color: var(--muted);
+  }
+  .empty .ico { font-size: 46px; }
+  .empty h3 { font-family: var(--serif); color: var(--ink); font-size: 20px; margin: 14px 0 6px; font-weight: 600; }
+  .empty p { font-size: 13.5px; margin: 0 auto; max-width: 240px; }
+
+  /* FAB */
+  .fab {
+    position: fixed;
+    bottom: calc(74px + env(safe-area-inset-bottom));
+    left: 50%;
+    transform: translateX(calc(234px - 100% - 16px));
+    width: 56px; height: 56px;
+    border-radius: 18px;
+    border: none;
+    background: var(--primary);
+    color: #fff;
+    font-size: 27px;
+    display: grid; place-items: center;
+    box-shadow: 0 6px 16px rgba(47,125,91,.4);
+    z-index: 40;
+    transition: transform .14s ease;
+  }
+  @media (max-width: 519px){
+    .fab { left: auto; right: 18px; transform: none; }
+    .fab:active { transform: scale(.9); }
+  }
+  .fab:active { transform: translateX(calc(234px - 100% - 16px)) scale(.9); }
+  @media (max-width: 519px){ .fab:active { transform: scale(.9); } }
+
+  /* Tab bar */
+  .tabbar {
+    position: sticky;
+    bottom: 0;
+    display: flex;
+    background: color-mix(in srgb, var(--surface) 88%, transparent);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-top: 1px solid var(--border);
+    padding: 8px 6px calc(8px + env(safe-area-inset-bottom));
+    z-index: 30;
+  }
+  .tab {
+    flex: 1;
+    background: none; border: none;
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    padding: 6px 0;
+    color: var(--faint);
+    font-size: 11px;
+    font-weight: 600;
+    transition: color .15s;
+  }
+  .tab .ti { font-size: 21px; line-height: 1; filter: grayscale(1) opacity(.65); transition: filter .15s, transform .15s; }
+  .tab.active { color: var(--primary); }
+  .tab.active .ti { filter: none; transform: translateY(-1px); }
+
+  /* Bottom sheet */
+  .scrim {
+    position: fixed; inset: 0;
+    background: rgba(18,26,20,.42);
+    opacity: 0; pointer-events: none;
+    transition: opacity .25s;
+    z-index: 50;
+  }
+  .scrim.open { opacity: 1; pointer-events: auto; }
+  .sheet {
+    position: fixed;
+    left: 50%;
+    bottom: 0;
+    width: 100%;
+    max-width: 468px;
+    transform: translateX(-50%) translateY(100%);
+    background: var(--surface);
+    border-radius: 26px 26px 0 0;
+    z-index: 60;
+    max-height: 90dvh;
+    display: flex; flex-direction: column;
+    transition: transform .3s cubic-bezier(.32,.72,0,1);
+    box-shadow: 0 -10px 40px rgba(0,0,0,.2);
+  }
+  .sheet.open { transform: translateX(-50%) translateY(0); }
+  .grip { width: 40px; height: 4px; border-radius: 2px; background: var(--border-strong); margin: 10px auto 2px; flex: none; }
+  .sheet-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 8px 20px 12px;
+    flex: none;
+  }
+  .sheet-head h2 { font-family: var(--serif); font-size: 21px; font-weight: 600; margin: 0; }
+  .x-btn {
+    border: none; background: var(--surface-2);
+    width: 32px; height: 32px; border-radius: 50%;
+    color: var(--muted); font-size: 17px;
+    display: grid; place-items: center;
+  }
+  .sheet-body { overflow-y: auto; padding: 0 20px calc(24px + env(safe-area-inset-bottom)); overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+
+  /* Search + species list */
+  .search {
+    width: 100%;
+    border: 1px solid var(--border-strong);
+    background: var(--surface-2);
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-size: 16px;
+    color: var(--ink);
+    margin-bottom: 12px;
+  }
+  .search::placeholder { color: var(--faint); }
+  .species-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 11px 8px;
+    border-radius: 12px;
+    width: 100%;
+    background: none; border: none;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  .species-row:last-child { border-bottom: none; }
+  .species-row .em { font-size: 24px; width: 34px; text-align: center; flex: none; }
+  .species-row .nm { font-family: var(--serif); font-weight: 600; font-size: 15.5px; color: var(--ink); }
+  .species-row .meta { font-size: 12px; color: var(--muted); }
+  .species-row .go { margin-left: auto; color: var(--faint); font-size: 18px; }
+
+  /* Form */
+  .field { margin: 14px 0; }
+  .field label { display: block; font-size: 12.5px; font-weight: 600; color: var(--muted); margin-bottom: 6px; }
+  .field input, .field select {
+    width: 100%;
+    border: 1px solid var(--border-strong);
+    background: var(--surface-2);
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-size: 16px;
+    color: var(--ink);
+  }
+  .row2 { display: flex; gap: 10px; }
+  .row2 > * { flex: 1; }
+  .hint { font-size: 11.5px; color: var(--faint); margin-top: 5px; }
+
+  .btn-primary {
+    width: 100%;
+    border: none;
+    background: var(--primary);
+    color: #fff;
+    padding: 15px;
+    border-radius: 14px;
+    font-size: 15.5px;
+    font-weight: 600;
+    margin-top: 8px;
+    transition: transform .12s;
+  }
+  .btn-primary:active { transform: scale(.98); }
+  .btn-primary:disabled { opacity: .5; }
+  .btn-ghost {
+    width: 100%;
+    border: 1px solid var(--border-strong);
+    background: none;
+    color: var(--muted);
+    padding: 13px;
+    border-radius: 14px;
+    font-size: 14.5px;
+    font-weight: 600;
+    margin-top: 10px;
+  }
+  .link-btn {
+    background: none; border: none; color: var(--primary);
+    font-weight: 600; font-size: 13.5px; padding: 8px 0;
+  }
+
+  /* Detail sheet */
+  .detail-hero { display: flex; align-items: center; gap: 14px; margin-bottom: 4px; }
+  .detail-hero .avatar { width: 62px; height: 62px; font-size: 32px; border-radius: 18px; }
+  .avatar-cam {
+    position: absolute; right: -4px; bottom: -4px;
+    width: 24px; height: 24px; border-radius: 50%;
+    background: var(--primary); color: #fff; font-size: 12px;
+    display: grid; place-items: center; border: 2px solid var(--surface);
+  }
+  .detail-hero .dn { font-family: var(--serif); font-size: 23px; font-weight: 600; line-height: 1.1; }
+  .detail-hero .ds { font-size: 13px; color: var(--muted); font-style: italic; margin-top: 2px; }
+
+  .care-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 16px 0; }
+  .care-item {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 12px 13px;
+  }
+  .care-item .ci-lbl { font-size: 11px; text-transform: uppercase; letter-spacing: .07em; color: var(--faint); font-weight: 600; }
+  .care-item .ci-val { font-size: 15px; font-weight: 600; margin-top: 4px; color: var(--ink); }
+  .care-item .ci-em { font-size: 15px; }
+  .note-box {
+    background: var(--primary-soft);
+    border-radius: 14px;
+    padding: 13px 15px;
+    font-size: 13.5px;
+    color: var(--ink);
+    line-height: 1.5;
+    margin-bottom: 8px;
+  }
+  .note-box b { color: var(--primary-deep); }
+  .next-line {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 13px 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    margin: 14px 0;
+    font-size: 14px;
+  }
+  .next-line .nv { font-weight: 600; }
+  .history { margin-top: 6px; }
+  .history .h-item {
+    display: flex; align-items: center; gap: 9px;
+    font-size: 13px; color: var(--muted);
+    padding: 6px 0;
+  }
+  .history .h-item .hd { width: 7px; height: 7px; border-radius: 50%; background: var(--water); flex: none; }
+  .danger { color: var(--warn); }
+
+  /* Calendar */
+  .cal-head {
+    display: flex; align-items: center; justify-content: space-between;
+    margin: 10px 2px 14px;
+  }
+  .cal-head .mlabel { font-family: var(--serif); font-size: 20px; font-weight: 600; text-transform: capitalize; }
+  .cal-nav { display: flex; gap: 8px; }
+  .cal-nav button {
+    width: 36px; height: 36px; border-radius: 11px;
+    border: 1px solid var(--border); background: var(--surface);
+    color: var(--muted); font-size: 16px;
+    display: grid; place-items: center;
+  }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+  .cal-dow {
+    text-align: center; font-size: 10.5px; font-weight: 600;
+    color: var(--faint); text-transform: uppercase; letter-spacing: .04em;
+    padding-bottom: 6px;
+  }
+  .cal-cell {
+    aspect-ratio: 1;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    background: var(--surface);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 3px;
+    font-size: 13.5px;
+    font-variant-numeric: tabular-nums;
+    color: var(--ink);
+    position: relative;
+    box-shadow: var(--shadow);
+  }
+  .cal-cell.blank { background: none; box-shadow: none; border: none; }
+  .cal-cell.other { color: var(--faint); background: var(--surface-2); box-shadow: none; }
+  .cal-cell.today { border-color: var(--primary); color: var(--primary-deep); font-weight: 700; }
+  .cal-cell .marks { display: flex; gap: 3px; height: 6px; }
+  .cal-cell .m { width: 5px; height: 5px; border-radius: 50%; }
+  .m.done { background: var(--primary); }
+  .m.plan { background: transparent; border: 1.5px solid var(--water); }
+  .cal-legend { display: flex; gap: 16px; justify-content: center; margin: 16px 0 6px; font-size: 12px; color: var(--muted); }
+  .cal-legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .cal-legend .m { width: 8px; height: 8px; border-radius: 50%; }
+
+  .day-events { margin-top: 4px; }
+  .day-ev {
+    display: flex; align-items: center; gap: 11px;
+    padding: 11px 4px;
+    border-bottom: 1px solid var(--border);
+  }
+  .day-ev:last-child { border-bottom: none; }
+  .day-ev .em { font-size: 22px; width: 30px; text-align: center; }
+  .day-ev .txt { flex: 1; }
+  .day-ev .t1 { font-weight: 600; font-size: 14.5px; }
+  .day-ev .t2 { font-size: 12px; color: var(--muted); }
+  .day-ev-check { cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  .day-ev-check:active { background: var(--surface-2); }
+  .day-check {
+    width: 22px; height: 22px; flex: none;
+    accent-color: var(--primary);
+    margin-right: 2px;
+  }
+  .tag { font-size: 10.5px; font-weight: 700; padding: 3px 8px; border-radius: 999px; text-transform: uppercase; letter-spacing: .05em; }
+  .tag.done { color: var(--primary-deep); background: var(--primary-soft); }
+  .tag.plan { color: var(--water); background: var(--water-soft); }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: calc(90px + env(safe-area-inset-bottom));
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--ink);
+    color: var(--ground);
+    padding: 11px 18px;
+    border-radius: 999px;
+    font-size: 13.5px;
+    font-weight: 600;
+    z-index: 90;
+    opacity: 0; pointer-events: none;
+    transition: opacity .25s, transform .25s;
+    white-space: nowrap;
+    box-shadow: var(--shadow-lift);
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
+
+  .segmented { display: flex; background: var(--surface-2); border-radius: 12px; padding: 4px; gap: 4px; margin-bottom: 4px; }
+  .segmented button {
+    flex: 1; border: none; background: none; padding: 9px; border-radius: 9px;
+    font-size: 13.5px; font-weight: 600; color: var(--muted);
+  }
+  .segmented button.on { background: var(--surface); color: var(--ink); box-shadow: var(--shadow); }
+</style>
+
+<div class="app">
+  <div class="headwrap" style="padding:calc(env(safe-area-inset-top) + 14px) 16px 4px">
+    <div class="brand-card">
+      <div>
+        <div class="brand"><span class="leaf">🪴</span><h1>Foglia</h1></div>
+        <div class="sub" id="subtitle" style="font-size:13px;margin-top:2px">Sempre verde 🌿</div>
+        <div class="sub" id="syncBadge" style="font-size:11px;margin-top:2px;opacity:.85">📱 Solo su questo telefono</div>
+      </div>
+      <button class="theme-btn" id="themeBtn" aria-label="Cambia tema">◑</button>
+    </div>
+  </div>
+
+  <!-- OGGI -->
+  <div class="screen" id="screen-oggi">
+    <div class="hero">
+      <div class="date" id="heroDate"></div>
+      <div class="big" id="heroBig">Buongiorno</div>
+      <div class="msg" id="heroMsg"></div>
+    </div>
+    <div id="oggiContent"></div>
+  </div>
+
+  <!-- PIANTE -->
+  <div class="screen hidden" id="screen-piante">
+    <div id="pianteContent"></div>
+  </div>
+
+  <!-- CALENDARIO -->
+  <div class="screen hidden" id="screen-cal">
+    <div class="cal-head">
+      <div class="mlabel" id="calLabel"></div>
+      <div class="cal-nav">
+        <button id="calPrev" aria-label="Mese precedente">‹</button>
+        <button id="calNext" aria-label="Mese successivo">›</button>
+      </div>
+    </div>
+    <div class="cal-grid" id="calGrid"></div>
+    <div class="cal-legend">
+      <span><span class="m done"></span> Innaffiata</span>
+      <span><span class="m plan"></span> In programma</span>
+    </div>
+    <div id="calDayList"></div>
+  </div>
+
+  <button class="fab" id="fab" aria-label="Aggiungi pianta">+</button>
+
+  <nav class="tabbar">
+    <button class="tab" data-tab="piante"><span class="ti">🌿</span>Piante</button>
+    <button class="tab" data-tab="cal"><span class="ti">📅</span>Calendario</button>
+    <button class="tab active" data-tab="oggi"><span class="ti">💧</span>Oggi</button>
+  </nav>
+</div>
+
+<div class="scrim" id="scrim"></div>
+
+<!-- ADD SHEET -->
+<div class="sheet" id="addSheet" role="dialog" aria-modal="true" aria-label="Aggiungi pianta">
+  <div class="grip"></div>
+  <div class="sheet-head"><h2 id="addTitle">Aggiungi una pianta</h2><button class="x-btn" data-close>✕</button></div>
+  <div class="sheet-body" id="addBody"></div>
+</div>
+
+<!-- DETAIL SHEET -->
+<div class="sheet" id="detailSheet" role="dialog" aria-modal="true" aria-label="Dettaglio pianta">
+  <div class="grip"></div>
+  <div class="sheet-head"><h2>Scheda pianta</h2><button class="x-btn" data-close>✕</button></div>
+  <div class="sheet-body" id="detailBody"></div>
+</div>
+
+<!-- DAY SHEET -->
+<div class="sheet" id="daySheet" role="dialog" aria-modal="true" aria-label="Giorno">
+  <div class="grip"></div>
+  <div class="sheet-head"><h2 id="dayTitle">Giorno</h2><button class="x-btn" data-close>✕</button></div>
+  <div class="sheet-body" id="dayBody"></div>
+</div>
+
+<!-- ROOMS SHEET -->
+<div class="sheet" id="roomSheet" role="dialog" aria-modal="true" aria-label="Gestisci stanze">
+  <div class="grip"></div>
+  <div class="sheet-head"><h2>Le stanze di casa</h2><button class="x-btn" data-close>✕</button></div>
+  <div class="sheet-body" id="roomBody"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+
+<script>
+"use strict";
+
+/* ---------- Database specie comuni (dati di cura indicativi) ---------- */
+const SPECIES = [
+  // --- Tropicali da foglia / appartamento ---
+  { key:"pothos", name:"Pothos", latin:"Epipremnum aureum", em:"🌿", every:7, light:"Indiretta", tmin:18, tmax:27, diff:"Facile", note:"Molto resistente. Lascia asciugare i primi 2 cm di terra tra un'innaffiatura e l'altra." },
+  { key:"scindapsus", name:"Scindapsus", latin:"Scindapsus pictus", em:"🌿", every:8, light:"Indiretta", tmin:18, tmax:27, diff:"Facile", note:"Foglie argentate. Lascia asciugare la parte superiore del terreno." },
+  { key:"monstera", name:"Monstera", latin:"Monstera deliciosa", em:"🌱", every:7, light:"Indiretta", tmin:18, tmax:27, diff:"Facile", note:"Ama l'umidità: vaporizza le foglie. Non sopporta i ristagni d'acqua." },
+  { key:"monstera_adansonii", name:"Monstera adansonii", latin:"Monstera adansonii", em:"🌱", every:6, light:"Indiretta", tmin:18, tmax:27, diff:"Facile", note:"Detta 'monstera buchi'. Vuole umidità e terreno appena umido." },
+  { key:"filodendro", name:"Filodendro", latin:"Philodendron", em:"🌿", every:7, light:"Indiretta", tmin:18, tmax:27, diff:"Facile", note:"Adattabile. Innaffia quando il terreno è asciutto in superficie." },
+  { key:"filodendro_brasil", name:"Filodendro Brasil", latin:"Philodendron hederaceum", em:"🌿", every:7, light:"Indiretta", tmin:18, tmax:27, diff:"Facile", note:"Rampicante variegato. Poca acqua ma costante." },
+  { key:"sansevieria", name:"Sansevieria", latin:"Dracaena trifasciata", em:"🗡️", every:18, light:"Indiretta / tollera diretta", tmin:15, tmax:27, diff:"Facilissima", note:"Teme l'acqua in eccesso. In inverno riduci molto le innaffiature." },
+  { key:"zz", name:"Zamioculcas", latin:"Zamioculcas zamiifolia", em:"🌿", every:18, light:"Bassa / indiretta", tmin:15, tmax:26, diff:"Facilissima", note:"Sopravvive anche in zone poco luminose. Meglio poca acqua che troppa." },
+  { key:"spatifillo", name:"Spatifillo", latin:"Spathiphyllum", em:"🍃", every:6, light:"Indiretta", tmin:18, tmax:25, diff:"Facile", note:"Ti avvisa: quando ha sete abbassa le foglie. Tieni il terriccio leggermente umido." },
+  { key:"anthurium", name:"Anthurium", latin:"Anthurium andraeanum", em:"🌺", every:6, light:"Indiretta luminosa", tmin:18, tmax:26, diff:"Media", note:"Fiori rossi cerosi. Ama umidità; fai asciugare la superficie tra le innaffiature." },
+  { key:"pilea", name:"Pilea", latin:"Pilea peperomioides", em:"🍀", every:7, light:"Indiretta luminosa", tmin:15, tmax:25, diff:"Facile", note:"Ruotala spesso verso la luce. Fai asciugare la terra in superficie." },
+  { key:"peperomia", name:"Peperomia", latin:"Peperomia", em:"🌿", every:9, light:"Indiretta", tmin:18, tmax:25, diff:"Facile", note:"Foglie carnose che trattengono acqua: non esagerare con le innaffiature." },
+  { key:"syngonium", name:"Syngonium", latin:"Syngonium podophyllum", em:"🌿", every:6, light:"Indiretta", tmin:18, tmax:26, diff:"Facile", note:"Cresce in fretta. Terreno appena umido, ama l'umidità ambientale." },
+  { key:"tradescantia", name:"Tradescantia", latin:"Tradescantia zebrina", em:"💜", every:5, light:"Indiretta luminosa", tmin:15, tmax:25, diff:"Facile", note:"Colori intensi con buona luce. Non far seccare del tutto il terreno." },
+  { key:"hoya", name:"Hoya", latin:"Hoya carnosa", em:"🌸", every:10, light:"Indiretta luminosa", tmin:16, tmax:26, diff:"Facile", note:"Pianta di cera. Fai asciugare bene tra un'innaffiatura e l'altra." },
+  { key:"fittonia", name:"Fittonia", latin:"Fittonia albivenis", em:"🍃", every:3, light:"Indiretta", tmin:18, tmax:25, diff:"Media", note:"Sviene se ha sete ma si riprende. Vuole terreno sempre umido e molta umidità." },
+  { key:"dieffenbachia", name:"Dieffenbachia", latin:"Dieffenbachia", em:"🌿", every:7, light:"Indiretta", tmin:18, tmax:26, diff:"Media", note:"Foglie grandi maculate. Terreno appena umido; teme il freddo. Linfa irritante." },
+  { key:"aglaonema", name:"Aglaonema", latin:"Aglaonema", em:"🌿", every:8, light:"Bassa / indiretta", tmin:18, tmax:26, diff:"Facile", note:"Tollera poca luce. Lascia asciugare la superficie del terreno." },
+  { key:"croton", name:"Croton", latin:"Codiaeum variegatum", em:"🍂", every:6, light:"Luminosa / un po' di diretta", tmin:18, tmax:27, diff:"Media", note:"Colori accesi con tanta luce. Terreno appena umido, no correnti." },
+  { key:"calathea", name:"Calathea", latin:"Calathea", em:"🍃", every:4, light:"Indiretta", tmin:18, tmax:24, diff:"Impegnativa", note:"Ama umidità alta e terreno sempre appena umido. Usa acqua non calcarea." },
+  { key:"maranta", name:"Maranta", latin:"Maranta leuconeura", em:"🍃", every:4, light:"Indiretta", tmin:18, tmax:24, diff:"Media", note:"La 'pianta che prega': chiude le foglie di sera. Umidità alta, acqua non calcarea." },
+  { key:"stromanthe", name:"Stromanthe", latin:"Stromanthe sanguinea", em:"🍃", every:4, light:"Indiretta", tmin:18, tmax:24, diff:"Impegnativa", note:"Foglie rosa sul retro. Vuole umidità elevata e terra sempre umida." },
+  { key:"alocasia", name:"Alocasia", latin:"Alocasia", em:"🌿", every:5, light:"Indiretta luminosa", tmin:18, tmax:26, diff:"Impegnativa", note:"Foglie a freccia. Terreno umido ma drenante, molta umidità dell'aria." },
+  { key:"caladium", name:"Caladium", latin:"Caladium", em:"🍃", every:5, light:"Indiretta", tmin:18, tmax:27, diff:"Media", note:"Foglie colorate estive. In inverno riposa perdendo le foglie." },
+  { key:"begonia_maculata", name:"Begonia maculata", latin:"Begonia maculata", em:"🌿", every:5, light:"Indiretta luminosa", tmin:18, tmax:25, diff:"Media", note:"Foglie a pois. Non bagnare le foglie; terra appena umida." },
+  { key:"begonia_rex", name:"Begonia Rex", latin:"Begonia rex", em:"🍃", every:5, light:"Indiretta", tmin:18, tmax:24, diff:"Media", note:"Foglie decorative. Umidità alta ma no acqua sulle foglie." },
+  { key:"coleus", name:"Coleus", latin:"Coleus scutellarioides", em:"🍁", every:3, light:"Luminosa", tmin:16, tmax:26, diff:"Facile", note:"Foglie coloratissime. Vuole terra sempre umida e tanta luce." },
+  { key:"aspidistra", name:"Aspidistra", latin:"Aspidistra elatior", em:"🌿", every:12, light:"Bassa / indiretta", tmin:10, tmax:25, diff:"Facilissima", note:"Quasi indistruttibile, tollera ombra e trascuratezza. Poca acqua." },
+  { key:"clorofito", name:"Nastrino (Falangio)", latin:"Chlorophytum comosum", em:"🌿", every:6, light:"Indiretta luminosa", tmin:12, tmax:26, diff:"Facilissima", note:"Produce piccole piantine pendenti. Molto tollerante." },
+  { key:"cordyline", name:"Cordyline", latin:"Cordyline fruticosa", em:"🌿", every:6, light:"Luminosa", tmin:16, tmax:26, diff:"Media", note:"Foglie rosse/verdi. Terra umida e aria non secca; acqua non calcarea." },
+  // --- Ficus e alberelli da interno ---
+  { key:"ficuslyrata", name:"Ficus lyrata", latin:"Ficus lyrata", em:"🌳", every:9, light:"Indiretta luminosa", tmin:18, tmax:24, diff:"Media", note:"Non spostarlo spesso e non lasciarlo in corrente. Pulisci le foglie dalla polvere." },
+  { key:"ficuselastica", name:"Ficus elastica", latin:"Ficus elastica", em:"🌳", every:9, light:"Indiretta luminosa", tmin:16, tmax:24, diff:"Facile", note:"Foglie spesse e lucide. Innaffia quando il terreno è asciutto in superficie." },
+  { key:"ficusbenjamin", name:"Ficus Benjamin", latin:"Ficus benjamina", em:"🌳", every:8, light:"Indiretta luminosa", tmin:16, tmax:24, diff:"Media", note:"Perde foglie se spostato o in corrente. Terreno appena umido." },
+  { key:"ficusginseng", name:"Ficus Ginseng", latin:"Ficus microcarpa", em:"🌳", every:8, light:"Indiretta luminosa", tmin:16, tmax:25, diff:"Facile", note:"Spesso allevato come bonsai. Terra appena umida, ama l'umidità." },
+  { key:"schefflera", name:"Schefflera", latin:"Schefflera arboricola", em:"🌿", every:8, light:"Indiretta luminosa", tmin:15, tmax:25, diff:"Facile", note:"Foglie a ombrello. Fai asciugare la superficie del terreno." },
+  { key:"pachira", name:"Pachira", latin:"Pachira aquatica", em:"🌳", every:10, light:"Indiretta luminosa", tmin:16, tmax:26, diff:"Facile", note:"'Albero della fortuna' col fusto intrecciato. Lascia asciugare bene tra le innaffiature." },
+  { key:"dracaena", name:"Dracaena marginata", latin:"Dracaena marginata", em:"🌴", every:9, light:"Indiretta", tmin:18, tmax:24, diff:"Facile", note:"Lascia asciugare la parte superiore del terreno. Sensibile all'acqua molto calcarea." },
+  { key:"dracaena_fragrans", name:"Tronchetto della felicità", latin:"Dracaena fragrans", em:"🌴", every:10, light:"Indiretta", tmin:16, tmax:26, diff:"Facile", note:"Robusto. Fai asciugare metà terriccio prima di innaffiare." },
+  { key:"yucca", name:"Yucca", latin:"Yucca elephantipes", em:"🌵", every:12, light:"Luminosa / diretta", tmin:10, tmax:28, diff:"Facile", note:"Vuole luce forte e poca acqua. Teme i ristagni." },
+  { key:"beaucarnea", name:"Nolina", latin:"Beaucarnea recurvata", em:"🌴", every:16, light:"Luminosa / diretta", tmin:12, tmax:28, diff:"Facilissima", note:"'Piede d'elefante': accumula acqua nel fusto. Innaffia di rado." },
+  { key:"cycas", name:"Cycas", latin:"Cycas revoluta", em:"🌴", every:12, light:"Luminosa", tmin:12, tmax:28, diff:"Media", note:"Cresce lentissima. Fai asciugare bene il terreno." },
+  // --- Palme ---
+  { key:"kentia", name:"Kentia", latin:"Howea forsteriana", em:"🌴", every:8, light:"Indiretta luminosa", tmin:16, tmax:26, diff:"Facile", note:"Palma elegante e tollerante. Terra appena umida, no ristagni." },
+  { key:"areca", name:"Areca", latin:"Dypsis lutescens", em:"🌴", every:6, light:"Indiretta luminosa", tmin:18, tmax:26, diff:"Media", note:"Ama l'umidità. Terreno costantemente ma leggermente umido." },
+  { key:"chamaedorea", name:"Palma nana", latin:"Chamaedorea elegans", em:"🌴", every:7, light:"Indiretta", tmin:16, tmax:26, diff:"Facile", note:"Piccola palma da interno tollerante. Terra appena umida." },
+  // --- Felci ---
+  { key:"felce_boston", name:"Felce di Boston", latin:"Nephrolepis exaltata", em:"🌿", every:3, light:"Indiretta / mezz'ombra", tmin:16, tmax:24, diff:"Media", note:"Vuole molta umidità: vaporizza spesso e non far seccare il terriccio." },
+  { key:"asplenium", name:"Felce nido d'uccello", latin:"Asplenium nidus", em:"🌿", every:4, light:"Indiretta", tmin:18, tmax:26, diff:"Media", note:"Innaffia il terriccio, non il centro della rosetta. Ama l'umidità." },
+  { key:"capelvenere", name:"Capelvenere", latin:"Adiantum", em:"🌿", every:2, light:"Indiretta / mezz'ombra", tmin:16, tmax:23, diff:"Impegnativa", note:"Non tollera la siccità: terra sempre umida e aria molto umida." },
+  { key:"platycerium", name:"Felce a corna", latin:"Platycerium", em:"🌿", every:6, light:"Indiretta luminosa", tmin:16, tmax:26, diff:"Media", note:"Epifita: meglio per immersione. Fai asciugare un po' tra le innaffiature." },
+  // --- Succulente e cactus ---
+  { key:"aloe", name:"Aloe vera", latin:"Aloe barbadensis", em:"🌵", every:16, light:"Diretta", tmin:13, tmax:27, diff:"Facile", note:"Pianta grassa: fai asciugare bene la terra. Vaso con ottimo drenaggio." },
+  { key:"crassula", name:"Albero di giada", latin:"Crassula ovata", em:"🪴", every:14, light:"Luminosa / diretta", tmin:12, tmax:27, diff:"Facile", note:"Foglie carnose. Innaffia solo a terra ben asciutta." },
+  { key:"echeveria", name:"Echeveria", latin:"Echeveria", em:"🪴", every:14, light:"Diretta", tmin:12, tmax:28, diff:"Facile", note:"Rosetta succulenta. Acqua alla base, mai sulla rosetta. Terra asciutta." },
+  { key:"haworthia", name:"Haworthia", latin:"Haworthia", em:"🪴", every:16, light:"Indiretta luminosa", tmin:12, tmax:27, diff:"Facilissima", note:"Piccola e resistente. Fai asciugare completamente il terreno." },
+  { key:"sedum", name:"Sedum", latin:"Sedum", em:"🪴", every:14, light:"Diretta", tmin:10, tmax:28, diff:"Facile", note:"Succulenta rustica. Pochissima acqua, tanto sole." },
+  { key:"sempervivum", name:"Semprevivo", latin:"Sempervivum", em:"🪴", every:16, light:"Diretta", tmin:5, tmax:28, diff:"Facilissima", note:"Resiste anche al freddo. Terra asciutta e drenante." },
+  { key:"kalanchoe", name:"Kalanchoe", latin:"Kalanchoe blossfeldiana", em:"🌺", every:12, light:"Luminosa", tmin:13, tmax:27, diff:"Facile", note:"Succulenta fiorita. Fai asciugare la terra; non bagnare i fiori." },
+  { key:"aeonium", name:"Aeonium", latin:"Aeonium", em:"🪴", every:12, light:"Luminosa / diretta", tmin:10, tmax:27, diff:"Facile", note:"Rosette su fusto. Riposa d'estate: in quel periodo pochissima acqua." },
+  { key:"agave", name:"Agave", latin:"Agave", em:"🌵", every:20, light:"Diretta", tmin:8, tmax:32, diff:"Facilissima", note:"Amante del sole pieno. Innaffia molto di rado." },
+  { key:"senecio_perle", name:"Collana di perle", latin:"Curio rowleyanus", em:"🪴", every:12, light:"Indiretta luminosa", tmin:13, tmax:27, diff:"Media", note:"Perline pendenti. Fai asciugare bene; teme i ristagni." },
+  { key:"euphorbia", name:"Euforbia (cactus candelabro)", latin:"Euphorbia trigona", em:"🌵", every:16, light:"Luminosa / diretta", tmin:12, tmax:30, diff:"Facile", note:"Sembra un cactus. Poca acqua. Linfa lattiginosa irritante." },
+  { key:"cactus", name:"Cactus", latin:"Cactaceae", em:"🌵", every:20, light:"Diretta", tmin:8, tmax:32, diff:"Facile", note:"In estate acqua ogni 2-3 settimane; in inverno quasi mai." },
+  { key:"mammillaria", name:"Mammillaria", latin:"Mammillaria", em:"🌵", every:20, light:"Diretta", tmin:8, tmax:32, diff:"Facile", note:"Cactus globoso. Terra asciutta, sole pieno, riposo secco d'inverno." },
+  { key:"opuntia", name:"Opuntia (fico d'India)", latin:"Opuntia", em:"🌵", every:20, light:"Diretta", tmin:5, tmax:35, diff:"Facilissima", note:"Molto rustico. Pochissima acqua e tanto sole." },
+  { key:"schlumbergera", name:"Cactus di Natale", latin:"Schlumbergera", em:"🌸", every:8, light:"Indiretta luminosa", tmin:15, tmax:25, diff:"Facile", note:"Fiorisce in inverno. Un po' più d'acqua degli altri cactus." },
+  { key:"lithops", name:"Lithops (sassi viventi)", latin:"Lithops", em:"🪨", every:28, light:"Diretta", tmin:10, tmax:30, diff:"Impegnativa", note:"Innaffia rarissimamente; sospendi durante la muta delle foglie." },
+  { key:"succulenta", name:"Succulenta (generica)", latin:"Crassulaceae", em:"🪴", every:14, light:"Diretta", tmin:12, tmax:28, diff:"Facile", note:"Lascia asciugare completamente il terriccio. Attenzione ai ristagni." },
+  // --- Fiorite da appartamento ---
+  { key:"orchidea", name:"Orchidea Phalaenopsis", latin:"Phalaenopsis", em:"🌸", every:7, light:"Indiretta", tmin:18, tmax:25, diff:"Media", note:"Innaffia per immersione del vaso ~10 minuti, poi scola bene. No acqua nel sottovaso." },
+  { key:"dendrobium", name:"Orchidea Dendrobium", latin:"Dendrobium", em:"🌸", every:7, light:"Indiretta luminosa", tmin:16, tmax:26, diff:"Media", note:"Vuole luce e buona ventilazione. Fai asciugare tra le innaffiature." },
+  { key:"violetta", name:"Violetta africana", latin:"Saintpaulia", em:"💜", every:5, light:"Indiretta luminosa", tmin:16, tmax:24, diff:"Media", note:"Acqua alla base o dal sottovaso, mai sulle foglie. Terra appena umida." },
+  { key:"ciclamino", name:"Ciclamino", latin:"Cyclamen", em:"🌸", every:4, light:"Luminosa fresca", tmin:8, tmax:18, diff:"Media", note:"Ama il fresco. Acqua dal sottovaso; non bagnare il tubero." },
+  { key:"stella_natale", name:"Stella di Natale", latin:"Euphorbia pulcherrima", em:"🌺", every:5, light:"Luminosa", tmin:15, tmax:22, diff:"Media", note:"Teme freddo e correnti. Terra appena umida, no ristagni." },
+  { key:"gardenia", name:"Gardenia", latin:"Gardenia jasminoides", em:"🤍", every:4, light:"Luminosa", tmin:16, tmax:24, diff:"Impegnativa", note:"Vuole acqua non calcarea, umidità e terreno acido sempre umido." },
+  { key:"azalea", name:"Azalea", latin:"Rhododendron", em:"🌸", every:4, light:"Luminosa / mezz'ombra", tmin:10, tmax:20, diff:"Media", note:"Terreno acido sempre umido, acqua non calcarea. Ama il fresco." },
+  { key:"gerbera", name:"Gerbera", latin:"Gerbera jamesonii", em:"🌼", every:4, light:"Luminosa", tmin:15, tmax:24, diff:"Media", note:"Acqua alla base per non far marcire il colletto. Luce abbondante." },
+  { key:"bromelia", name:"Bromelia (Guzmania)", latin:"Guzmania", em:"🌺", every:8, light:"Indiretta luminosa", tmin:18, tmax:27, diff:"Media", note:"Tieni un po' d'acqua nella rosetta centrale; terra solo leggermente umida." },
+  { key:"tillandsia", name:"Tillandsia", latin:"Tillandsia", em:"🌿", every:5, light:"Indiretta luminosa", tmin:15, tmax:28, diff:"Media", note:"Pianta aerea senza terra: immergila in acqua ~20 min e falla asciugare bene." },
+  { key:"clivia", name:"Clivia", latin:"Clivia miniata", em:"🌺", every:8, light:"Indiretta luminosa", tmin:10, tmax:24, diff:"Facile", note:"In inverno tienila fresca e asciutta per favorire la fioritura." },
+  // --- Aromatiche / orto e balcone ---
+  { key:"basilico", name:"Basilico", latin:"Ocimum basilicum", em:"🌿", every:2, light:"Diretta", tmin:18, tmax:26, diff:"Media", note:"Vuole sole e terra sempre umida. Bagna la base, non le foglie." },
+  { key:"rosmarino", name:"Rosmarino", latin:"Salvia rosmarinus", em:"🌿", every:6, light:"Diretta", tmin:10, tmax:28, diff:"Facile", note:"Preferisce terra piuttosto asciutta. Teme i ristagni d'acqua." },
+  { key:"salvia", name:"Salvia", latin:"Salvia officinalis", em:"🌿", every:5, light:"Diretta", tmin:10, tmax:28, diff:"Facile", note:"Ama il sole. Lascia asciugare la superficie tra le innaffiature." },
+  { key:"timo", name:"Timo", latin:"Thymus vulgaris", em:"🌿", every:6, light:"Diretta", tmin:8, tmax:28, diff:"Facile", note:"Rustico e resistente alla siccità. Poca acqua." },
+  { key:"menta", name:"Menta", latin:"Mentha", em:"🌿", every:2, light:"Luminosa / mezz'ombra", tmin:12, tmax:26, diff:"Facile", note:"Vuole terra sempre umida. Cresce vigorosa, meglio in vaso." },
+  { key:"prezzemolo", name:"Prezzemolo", latin:"Petroselinum crispum", em:"🌿", every:2, light:"Luminosa / mezz'ombra", tmin:10, tmax:24, diff:"Facile", note:"Terra costantemente umida. Tollera un po' d'ombra." },
+  { key:"origano", name:"Origano", latin:"Origanum vulgare", em:"🌿", every:6, light:"Diretta", tmin:10, tmax:28, diff:"Facile", note:"Rustico, tollera la siccità. Terra ben drenata." },
+  { key:"erba_cipollina", name:"Erba cipollina", latin:"Allium schoenoprasum", em:"🌿", every:3, light:"Luminosa", tmin:8, tmax:26, diff:"Facile", note:"Terra fresca e umida. Taglia gli steli per stimolare la ricrescita." },
+  { key:"alloro", name:"Alloro", latin:"Laurus nobilis", em:"🌿", every:7, light:"Luminosa", tmin:5, tmax:30, diff:"Facile", note:"Molto rustico. Lascia asciugare la superficie del terreno." },
+  { key:"peperoncino", name:"Peperoncino", latin:"Capsicum", em:"🌶️", every:2, light:"Diretta", tmin:16, tmax:30, diff:"Media", note:"Sole pieno e terra sempre umida in estate. Teme il freddo." },
+  { key:"pomodoro", name:"Pomodoro", latin:"Solanum lycopersicum", em:"🍅", every:1, light:"Diretta", tmin:15, tmax:30, diff:"Media", note:"In piena estate anche ogni giorno alla base. Vuole tanto sole." },
+  { key:"fragola", name:"Fragola", latin:"Fragaria", em:"🍓", every:2, light:"Luminosa", tmin:10, tmax:26, diff:"Media", note:"Terra sempre umida ma drenante. Bagna la base, non i frutti." },
+  { key:"lavanda", name:"Lavanda", latin:"Lavandula", em:"💜", every:8, light:"Diretta", tmin:5, tmax:30, diff:"Facile", note:"Ama il sole pieno e terra ben drenata. Poca acqua, mai ristagni." },
+  { key:"citronella", name:"Citronella", latin:"Cymbopogon citratus", em:"🌿", every:3, light:"Diretta", tmin:10, tmax:32, diff:"Facile", note:"Ama sole pieno e caldo. In estate innaffia spesso; tienila vicino a dove si sta seduti, tiene lontane le zanzare." },
+  // --- Fiorite / rampicanti da esterno-balcone ---
+  { key:"geranio", name:"Geranio", latin:"Pelargonium", em:"🌺", every:3, light:"Diretta", tmin:8, tmax:30, diff:"Facile", note:"In piena estate anche ogni giorno. Rimuovi i fiori appassiti." },
+  { key:"petunia", name:"Petunia / Surfinia", latin:"Petunia", em:"🌸", every:2, light:"Diretta", tmin:12, tmax:30, diff:"Facile", note:"Fioritura abbondante con sole e acqua regolare. Togli i fiori secchi." },
+  { key:"gelsomino", name:"Gelsomino", latin:"Jasminum", em:"🤍", every:4, light:"Luminosa / diretta", tmin:8, tmax:28, diff:"Facile", note:"Rampicante profumato. Terra fresca e umida in estate." },
+  { key:"bougainvillea", name:"Bougainvillea", latin:"Bougainvillea", em:"🌺", every:5, light:"Diretta", tmin:10, tmax:32, diff:"Media", note:"Ama il caldo e il sole. Riduci l'acqua per stimolare la fioritura." },
+  { key:"ortensia", name:"Ortensia", latin:"Hydrangea", em:"💠", every:2, light:"Mezz'ombra luminosa", tmin:8, tmax:26, diff:"Media", note:"Vuole tanta acqua e terra sempre umida. Evita il sole cocente." },
+  { key:"dipladenia", name:"Dipladenia / Mandevilla", latin:"Mandevilla", em:"🌺", every:4, light:"Diretta", tmin:12, tmax:30, diff:"Facile", note:"Rampicante fiorito estivo. Sole e terra appena umida; teme il freddo." },
+  { key:"hibiscus", name:"Ibisco", latin:"Hibiscus", em:"🌺", every:3, light:"Luminosa / diretta", tmin:12, tmax:30, diff:"Media", note:"Vuole luce e acqua regolare in estate. Teme il gelo." },
+  { key:"primula", name:"Primula", latin:"Primula", em:"🌼", every:3, light:"Luminosa fresca", tmin:5, tmax:18, diff:"Facile", note:"Fioritura di fine inverno. Terra fresca e umida, ambiente fresco." },
+  { key:"edera", name:"Edera", latin:"Hedera helix", em:"🍀", every:6, light:"Indiretta / mezz'ombra", tmin:5, tmax:22, diff:"Facile", note:"Preferisce il fresco. Tieni il terriccio leggermente umido." }
+];
+
+/* ---------- Categorie (per piante non in elenco: valori auto) ---------- */
+const CATEGORIES = [
+  { key:"foglia", name:"Tropicale da foglia", em:"🌿", every:7, light:"Indiretta", tmin:18, tmax:26, diff:"Facile", note:"Terreno appena umido; fai asciugare la superficie tra le innaffiature. Ama l'umidità dell'aria." },
+  { key:"grassa", name:"Pianta grassa / succulenta", em:"🪴", every:14, light:"Luminosa / diretta", tmin:12, tmax:28, diff:"Facile", note:"Lascia asciugare completamente la terra. Vaso ben drenato, attenzione ai ristagni." },
+  { key:"cactus", name:"Cactus", em:"🌵", every:20, light:"Diretta", tmin:8, tmax:32, diff:"Facile", note:"Pochissima acqua, tanto sole. In inverno quasi sospendi le innaffiature." },
+  { key:"aromatica", name:"Aromatica / orto", em:"🌿", every:3, light:"Diretta", tmin:12, tmax:28, diff:"Media", note:"Vuole sole e terra regolarmente umida. Bagna la base, non le foglie." },
+  { key:"fiorita_interno", name:"Fiorita da interno", em:"🌸", every:5, light:"Indiretta luminosa", tmin:16, tmax:24, diff:"Media", note:"Terra appena umida; non bagnare i fiori. Buona luce senza sole diretto forte." },
+  { key:"fiorita_esterno", name:"Fiorita da balcone", em:"🌺", every:3, light:"Diretta", tmin:10, tmax:30, diff:"Facile", note:"Acqua regolare in estate e sole. Togli i fiori appassiti." },
+  { key:"felce", name:"Felce", em:"🌿", every:3, light:"Indiretta / mezz'ombra", tmin:16, tmax:24, diff:"Media", note:"Vuole umidità alta e terra sempre appena umida. Non farla seccare." },
+  { key:"palma", name:"Palma", em:"🌴", every:8, light:"Indiretta luminosa", tmin:16, tmax:26, diff:"Facile", note:"Terra appena umida, no ristagni. Gradisce l'umidità ambientale." },
+  { key:"orchidea", name:"Orchidea", em:"🌸", every:7, light:"Indiretta", tmin:18, tmax:25, diff:"Media", note:"Innaffia per immersione e fai scolare bene. No acqua nel sottovaso." },
+  { key:"altro", name:"Altro / non lo so", em:"🪴", every:7, light:"Indiretta luminosa", tmin:15, tmax:25, diff:"Media", note:"Valori generici di partenza: puoi adattarli osservando la tua pianta." }
+];
+CATEGORIES.forEach(c=> c.seasonCat = c.key);
+
+/* Deduce automaticamente la categoria stagionale di ogni specie del catalogo,
+   così ogni pianta ha subito una sensibilità stagionale sensata senza
+   dover riscrivere a mano tutte le voci sopra. */
+(function assignSeasonCats(){
+  const RULES = [
+    [/cactus|mammillaria|opuntia|lithops|agave|euphorbia|schlumbergera/, "cactus"],
+    [/aloe|crassula|echeveria|haworthia|sedum|sempervivum|kalanchoe|aeonium|senecio_perle|succulenta/, "grassa"],
+    [/felce|asplenium|capelvenere|platycerium/, "felce"],
+    [/basilico|rosmarino|salvia|timo|menta|prezzemolo|origano|erba_cipollina|alloro|peperoncino|pomodoro|fragola|lavanda|citronella/, "aromatica"],
+    [/kentia|areca|chamaedorea/, "palma"],
+    [/orchidea|dendrobium/, "orchidea"],
+    [/geranio|petunia|gelsomino|bougainvillea|ortensia|dipladenia|hibiscus|primula|edera/, "fiorita_esterno"],
+    [/violetta|ciclamino|stella_natale|gardenia|azalea|gerbera|bromelia|tillandsia|clivia/, "fiorita_interno"],
+  ];
+  SPECIES.forEach(s=>{
+    const hit = RULES.find(([re])=> re.test(s.key));
+    s.seasonCat = hit ? hit[1] : "foglia";
+  });
+})();
+
+/* ---------- State + persistenza ----------
+   I dati vivono in un piccolo database Firebase Realtime Database
+   gratuito (nessun account richiesto a chi apre il link: solo tu, che
+   pubblichi l'app, hai bisogno di un account Google per creare il
+   progetto Firebase). La sincronizzazione è vera "live" grazie agli
+   eventi Server-Sent che Firebase invia a ogni modifica, senza polling.
+   Si tiene comunque una copia in localStorage come cache locale/offline.
+
+   ⚠️ CONFIGURAZIONE RICHIESTA: sostituisci FIREBASE_DB_URL qui sotto con
+   l'URL del tuo Realtime Database (vedi istruzioni fornite a parte).
+   Finché resta il valore segnaposto, l'app funziona SOLO in locale su
+   ogni telefono, esattamente come un'app senza sincronizzazione. */
+const FIREBASE_DB_URL = "https://foglia-4ea9b-default-rtdb.europe-west1.firebasedatabase.app";
+const FIREBASE_PATH = "foglia_casa_vostra/state"; // percorso nel database; puoi personalizzarlo
+
+const STORE_KEY = "foglia_v1";
+let state = { plants: [], rooms: [], theme: null };
+let sharedMode = false;     // true se il database condiviso è raggiungibile e configurato
+let saveQueued = false;     // batching: più modifiche rapide -> un solo salvataggio condiviso
+let applyingRemote = false; // true mentre stiamo applicando un aggiornamento arrivato da remoto
+let localDirty = false;     // true da quando facciamo una modifica locale a quando è pubblicata:
+                             // finché è true, ignoriamo dati remoti in arrivo per non perdere la modifica
+let sse = null;             // connessione Server-Sent Events verso Firebase
+
+function firebaseConfigured(){
+  return FIREBASE_DB_URL && !/INCOLLA_QUI/.test(FIREBASE_DB_URL);
+}
+function firebaseUrl(){
+  return FIREBASE_DB_URL.replace(/\/$/, "") + "/" + FIREBASE_PATH + ".json";
+}
+
+function load(){
+  try {
+    const raw = localStorage.getItem(STORE_KEY);
+    if (raw) state = Object.assign({ plants: [], rooms: [], theme: null }, JSON.parse(raw));
+  } catch(e){ /* storage non disponibile: si parte vuoti */ }
+  if (!Array.isArray(state.rooms)) state.rooms = [];
+  // Migrazione: converte la vecchia "posizione" testuale in stanza
+  let changed = false;
+  state.plants.forEach(p=>{
+    if (p.roomId === undefined){
+      if (p.location && p.location.trim()){
+        let r = state.rooms.find(x=> x.name.toLowerCase() === p.location.trim().toLowerCase());
+        if (!r){ r = { id: uid(), name: p.location.trim(), em: guessRoomEmoji(p.location) }; state.rooms.push(r); }
+        p.roomId = r.id;
+      } else {
+        p.roomId = null;
+      }
+      changed = true;
+    }
+    if (p.seasonCat === undefined){ p.seasonCat = "default"; changed = true; }
+    if (p.photo === undefined){ p.photo = null; changed = true; }
+  });
+  if (changed) saveLocalOnly();
+}
+
+/* Salvataggio solo locale (fallback offline + cache di cortesia). */
+function saveLocalOnly(){
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch(e){}
+}
+
+function mergeIncoming(parsed){
+  if (!parsed || !Array.isArray(parsed.plants)) return false;
+  state = Object.assign({ plants: [], rooms: [], theme: null }, parsed);
+  if (!Array.isArray(state.rooms)) state.rooms = [];
+  saveLocalOnly();
+  return true;
+}
+
+/* Primo caricamento dal database condiviso: se la coinquilina (o una
+   sessione precedente) ha già salvato dati, diventano la fonte di verità
+   e sostituiscono la cache locale del telefono. Poi apre il canale live. */
+async function initSharedStorage(){
+  if (!firebaseConfigured()){
+    sharedMode = false; updateSyncBadge();
+    return;
+  }
+  try {
+    const resp = await fetch(firebaseUrl());
+    const data = await resp.json();
+    sharedMode = true;
+    if (data){
+      if (!localDirty){
+        applyingRemote = true;
+        if (mergeIncoming(data)) render();
+        applyingRemote = false;
+      }
+      // se localDirty: teniamo la versione locale, appena più recente, e la
+      // pubblichiamo noi tra poco — non la sovrascriviamo con quella scaricata.
+    } else {
+      // Database ancora vuoto: pubblichiamo quello che abbiamo (anche se vuoto).
+      await publishShared();
+    }
+    openLiveChannel();
+  } catch(e){
+    sharedMode = false;
+  }
+  updateSyncBadge();
+}
+
+/* Canale "live": Firebase tiene aperta la connessione e invia un evento
+   ogni volta che qualcuno (noi o la coinquilina) scrive nel database. */
+function openLiveChannel(){
+  if (!firebaseConfigured() || sse) return;
+  try {
+    sse = new EventSource(firebaseUrl());
+    sse.addEventListener("put", ev=>{
+      if (saveQueued || applyingRemote || localDirty) return;
+      try {
+        const payload = JSON.parse(ev.data);
+        if (payload && payload.data){
+          applyingRemote = true;
+          if (mergeIncoming(payload.data)) render();
+          applyingRemote = false;
+        }
+      } catch(e){ /* evento non parsabile: ignora */ }
+    });
+    sse.onerror = ()=>{
+      // La connessione live è caduta (rete assente, ecc.): Firebase/il browser
+      // ritentano da soli la riconnessione, non serve fare nulla qui.
+    };
+  } catch(e){ /* EventSource non disponibile: si resta comunque su fetch+save */ }
+}
+
+async function publishShared(){
+  if (!firebaseConfigured()) return;
+  try {
+    await fetch(firebaseUrl(), {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(state)
+    });
+  } catch(e){
+    // Il salvataggio condiviso è fallito: i dati restano comunque salvi in locale.
+  }
+}
+
+function updateSyncBadge(){
+  const el = document.getElementById("syncBadge");
+  if (!el) return;
+  if (!firebaseConfigured()) el.textContent = "⚙️ Da configurare (vedi istruzioni)";
+  else el.textContent = sharedMode ? "🔗 Condivisa con la casa" : "📱 Solo su questo telefono";
+}
+
+/* Quando il telefono va in stand-by o cambi app, il canale live viene
+   sospeso dal sistema operativo per risparmiare batteria: al ritorno la
+   connessione potrebbe essere morta senza che l'app se ne accorga da sola.
+   Per questo, ogni volta che l'app torna in primo piano, controlliamo
+   subito se c'è qualcosa di più fresco sul database condiviso. */
+async function refreshFromShared(){
+  if (!firebaseConfigured()) return;
+  if (localDirty){
+    // Abbiamo una modifica locale non ancora pubblicata (es. rimasta in
+    // sospeso perché eravamo offline): proviamo a pubblicarla ora, invece
+    // di scaricare e rischiare di perderla.
+    if (sharedMode && !saveQueued){
+      await publishShared();
+      localDirty = false;
+    }
+    return;
+  }
+  try {
+    const resp = await fetch(firebaseUrl());
+    const data = await resp.json();
+    sharedMode = true;
+    if (data){
+      applyingRemote = true;
+      if (mergeIncoming(data)) render();
+      applyingRemote = false;
+    }
+    if (!sse) openLiveChannel();
+  } catch(e){ /* resta quello che avevamo: si riproverà alla prossima riattivazione */ }
+  updateSyncBadge();
+}
+document.addEventListener("visibilitychange", ()=>{
+  if (document.visibilityState === "visible") refreshFromShared();
+});
+window.addEventListener("pageshow", ()=> refreshFromShared());
+window.addEventListener("focus", ()=> refreshFromShared());
+
+function guessRoomEmoji(name){
+  const n = (name||"").toLowerCase();
+  if (/cucin/.test(n)) return "🍳";
+  if (/bagn/.test(n)) return "🚿";
+  if (/camera|letto|stanza da letto/.test(n)) return "🛏️";
+  if (/salott|soggiorn|living/.test(n)) return "🛋️";
+  if (/balcon|terrazz/.test(n)) return "🪟";
+  if (/giardin|orto/.test(n)) return "🏡";
+  if (/uffici|studio/.test(n)) return "💻";
+  if (/ingress|corrido/.test(n)) return "🚪";
+  return "🪴";
+}
+/* Salvataggio "ufficiale" chiamato da tutta l'app dopo ogni modifica.
+   - Tiene sempre una copia locale sul telefono (cortesia offline / fallback).
+   - Se il database condiviso è disponibile, pubblica lì i dati aggiornati:
+     la coinquilina lo riceve subito via canale live, senza dover ricaricare.
+   Più modifiche rapide in sequenza vengono raggruppate in un'unica
+   pubblicazione, per non sovraccaricare il database. */
+function save(){
+  saveLocalOnly();
+  if (applyingRemote) return; // non ripubblicare dati appena arrivati dall'altra persona
+  localDirty = true;
+  if (!sharedMode) return;
+  if (saveQueued) return;
+  saveQueued = true;
+  setTimeout(async ()=>{
+    saveQueued = false;
+    await publishShared();
+    localDirty = false;
+  }, 400);
+}
+
+/* ---------- Date helpers (locali) ---------- */
+function iso(d){ const x=new Date(d); return x.getFullYear()+"-"+String(x.getMonth()+1).padStart(2,"0")+"-"+String(x.getDate()).padStart(2,"0"); }
+function todayISO(){ return iso(new Date()); }
+function parseISO(s){ const [y,m,d]=s.split("-").map(Number); return new Date(y, m-1, d); }
+function addDays(isoStr, n){ const d=parseISO(isoStr); d.setDate(d.getDate()+n); return iso(d); }
+function diffDays(aIso, bIso){ return Math.round((parseISO(aIso)-parseISO(bIso))/86400000); } // a - b
+function fmtLong(isoStr){ return parseISO(isoStr).toLocaleDateString("it-IT",{weekday:"long", day:"numeric", month:"long"}); }
+function fmtShort(isoStr){ return parseISO(isoStr).toLocaleDateString("it-IT",{day:"numeric", month:"short"}); }
+const MONTHS = ["gennaio","febbraio","marzo","aprile","maggio","giugno","luglio","agosto","settembre","ottobre","novembre","dicembre"];
+const DOW = ["Lun","Mar","Mer","Gio","Ven","Sab","Dom"];
+
+/* ---------- Plant model ---------- */
+/* ---------- Stagionalità automatica ----------
+   In estate le piante hanno sete più spesso, in inverno riposano.
+   Applichiamo un fattore alla frequenza base (p.every), derivato dal
+   mese corrente e dalla "sensibilità stagionale" del tipo di pianta
+   (quanto una specie cambia ritmo tra le stagioni). */
+function isSummerNow(){
+  // Clima siciliano: la stagione calda è lunga (aprile-ottobre) e quella
+  // fredda è comunque mite, non un vero inverno rigido.
+  const m = new Date().getMonth()+1; // 1-12
+  return m>=4 && m<=10;
+}
+function seasonLabel(){ return isSummerNow() ? "Stagione calda" : "Stagione fredda"; }
+// Fattore per categoria: quante volte più spesso in stagione calda rispetto
+// a quella fredda. Attenuato rispetto a un clima da inverno rigido, perché
+// anche nella stagione fredda qui si continua ad innaffiare regolarmente.
+const SEASON_FACTOR = {
+  cactus: 2.2, grassa: 1.9, felce: 1.4, aromatica: 1.7, palma: 1.3,
+  orchidea: 1.2, foglia: 1.35, fiorita_interno: 1.25, fiorita_esterno: 1.6,
+  altro: 1.35, default: 1.4
+};
+function seasonalEvery(p){
+  const base = p.every;
+  const cat = p.seasonCat || "default";
+  const factor = SEASON_FACTOR[cat] || SEASON_FACTOR.default;
+  // base = frequenza "media"; in stagione calda più frequente (÷), in
+  // stagione fredda più rada (×), con transizione attenuata (radice).
+  const adj = isSummerNow() ? base/Math.sqrt(factor) : base*Math.sqrt(factor);
+  return Math.max(1, Math.round(adj));
+}
+function nextWater(p){ return addDays(p.lastWatered, seasonalEvery(p)); }
+function plantStatus(p){
+  const d = diffDays(nextWater(p), todayISO()); // >0 futuro, 0 oggi, <0 ritardo
+  if (d < 0) return { key:"late", days:d, label: d===-1 ? "In ritardo di 1 giorno" : "In ritardo di "+(-d)+" giorni", cls:"s-late" };
+  if (d === 0) return { key:"today", days:0, label:"Da innaffiare oggi", cls:"s-today" };
+  if (d === 1) return { key:"ok", days:1, label:"Tra 1 giorno", cls:"s-ok" };
+  return { key:"ok", days:d, label:"Tra "+d+" giorni", cls:"s-ok" };
+}
+function sortPlants(arr){
+  return arr.slice().sort((a,b)=> diffDays(nextWater(a),todayISO()) - diffDays(nextWater(b),todayISO()));
+}
+function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
+/* Ridimensiona e comprime una foto scelta dall'utente in un data URL leggero,
+   così anche molte foto restano gestibili nel salvataggio (locale o condiviso). */
+function resizeImageToDataURL(file, maxSide){
+  return new Promise((resolve, reject)=>{
+    const img = new Image();
+    const reader = new FileReader();
+    reader.onerror = ()=> reject(new Error("read failed"));
+    reader.onload = ()=>{
+      img.onerror = ()=> reject(new Error("decode failed"));
+      img.onload = ()=>{
+        let { width:w, height:h } = img;
+        const scale = Math.min(1, maxSide / Math.max(w,h));
+        w = Math.round(w*scale); h = Math.round(h*scale);
+        const canvas = document.createElement("canvas");
+        canvas.width = w; canvas.height = h;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL("image/jpeg", 0.82));
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+function avatarHTML(p, size){
+  const sz = size||50;
+  if (p.photo) return `<div class="avatar" style="padding:0;overflow:hidden"><img src="${p.photo}" alt="" style="width:100%;height:100%;object-fit:cover" /></div>`;
+  return `<div class="avatar">${p.em}</div>`;
+}
+
+/* ---------- Stanze ---------- */
+function roomById(id){ return state.rooms.find(r=>r.id===id) || null; }
+function roomLabel(id){ const r=roomById(id); return r ? r.name : ""; }
+function plantsInRoom(id){
+  if (id === null){
+    // "Senza stanza": ci finiscono sia le piante senza roomId, sia quelle il
+    // cui roomId punta a una stanza che non esiste (più) — così non spariscono mai.
+    return sortPlants(state.plants.filter(p => !p.roomId || !state.rooms.some(r=>r.id===p.roomId)));
+  }
+  return sortPlants(state.plants.filter(p=>p.roomId===id));
+}
+function addRoom(name, em){
+  const r = { id: uid(), name: name.trim(), em: em||"🪴" };
+  state.rooms.push(r); save(); return r;
+}
+function deleteRoom(id){
+  state.plants.forEach(p=>{ if (p.roomId===id) p.roomId=null; });
+  state.rooms = state.rooms.filter(r=>r.id!==id);
+  save();
+}
+
+/* ---------- Rendering ---------- */
+const $ = s => document.querySelector(s);
+
+function render(){
+  renderOggi();
+  renderPiante();
+  renderCal();
+}
+
+function renderHeader(){
+  const t = new Date();
+  const seasonTxt = isSummerNow() ? "☀️ Stagione calda" : "🌤️ Stagione fredda";
+  $("#heroDate").innerHTML = esc(t.toLocaleDateString("it-IT",{weekday:"long", day:"numeric", month:"long"})) +
+    `<span style="margin-left:8px;opacity:.85">· ${seasonTxt}</span>`;
+  const h = t.getHours();
+  $("#heroBig").textContent = h<12 ? "Buongiorno 🌤️" : h<18 ? "Buon pomeriggio ☀️" : "Buonasera 🌙";
+}
+
+function renderOggi(){
+  renderHeader();
+  const box = $("#oggiContent");
+  if (!state.plants.length){
+    $("#heroMsg").textContent = "Aggiungi la tua prima pianta per iniziare.";
+    box.innerHTML = emptyState("🌱","Nessuna pianta ancora","Tocca il pulsante + in basso per aggiungere le piante che hai in casa.");
+    return;
+  }
+  const due = sortPlants(state.plants).filter(p => plantStatus(p).days <= 0);
+  const soon = sortPlants(state.plants).filter(p => { const d=plantStatus(p).days; return d>0 && d<=3; });
+
+  $("#heroMsg").textContent = due.length
+    ? (due.length===1 ? "1 pianta ha bisogno d'acqua oggi." : due.length+" piante hanno bisogno d'acqua oggi.")
+    : "Tutto in ordine! Nessuna pianta da innaffiare oggi. 🌿";
+
+  let html = "";
+  if (due.length){
+    html += `<div class="section-label">Da innaffiare</div><div class="p-list">`;
+    html += due.map(cardHTML).join("");
+    html += `</div>`;
+  } else {
+    html += emptyState("✅","Nessuna sete oggi","Le tue piante sono a posto. Torna a trovarle domani!");
+  }
+  if (soon.length){
+    html += `<div class="section-label">Prossimi giorni</div><div class="p-list">`;
+    html += soon.map(cardHTML).join("");
+    html += `</div>`;
+  }
+  box.innerHTML = html;
+}
+
+function renderPiante(){
+  const box = $("#pianteContent");
+  if (!state.plants.length && !state.rooms.length){
+    box.innerHTML = `<div class="piante-bar"><span class="pt">Le mie piante</span>
+      <button class="rooms-btn" id="roomsBtn">🏠 Stanze</button></div>` +
+      emptyState("🪴","La tua serra è vuota","Aggiungi le piante di casa col pulsante +, oppure crea prima le stanze con «Stanze».");
+    $("#roomsBtn").addEventListener("click", openRooms);
+    return;
+  }
+  const n = state.plants.length;
+  let html = `<div class="piante-bar"><span class="pt">${n} ${n===1?"pianta":"piante"}${state.rooms.length?" · "+state.rooms.length+(state.rooms.length===1?" stanza":" stanze"):""}</span>
+    <button class="rooms-btn" id="roomsBtn">🏠 Stanze</button></div>`;
+
+  // Sezione per ogni stanza
+  state.rooms.forEach(r=>{
+    const plants = plantsInRoom(r.id);
+    html += `<div class="room-block">
+      <div class="room-head">
+        <span class="rem">${r.em||"🪴"}</span>
+        <span class="rname">${esc(r.name)}</span>
+        <span class="rcount">${plants.length}</span>
+        <button class="radd" data-addroom="${r.id}" aria-label="Aggiungi pianta in ${esc(r.name)}">+</button>
+      </div>`;
+    html += plants.length
+      ? `<div class="p-list">${plants.map(cardHTML).join("")}</div>`
+      : `<div class="room-empty">Nessuna pianta qui. Tocca + per aggiungerne una.</div>`;
+    html += `</div>`;
+  });
+
+  // Piante senza stanza
+  const orphans = plantsInRoom(null);
+  if (orphans.length){
+    html += `<div class="room-block">
+      <div class="room-head">
+        <span class="rem">🪴</span><span class="rname">Senza stanza</span><span class="rcount">${orphans.length}</span>
+      </div>
+      <div class="p-list">${orphans.map(cardHTML).join("")}</div></div>`;
+  }
+
+  box.innerHTML = html;
+  $("#roomsBtn").addEventListener("click", openRooms);
+  $$("[data-addroom]").forEach(b=> b.addEventListener("click", ()=> openAdd(b.dataset.addroom)));
+}
+
+function cardHTML(p){
+  const st = plantStatus(p);
+  const done = p.lastWatered === todayISO();
+  const loc = roomLabel(p.roomId);
+  return `<div class="p-card" data-plant="${p.id}" role="button" tabindex="0" aria-label="${esc(p.nickname||p.name)}, scheda">
+    ${avatarHTML(p)}
+    <div class="p-info">
+      <div class="p-name">${esc(p.nickname||p.name)}</div>
+      <div class="p-species">${esc(p.name)}${loc?" · "+esc(loc):""}</div>
+      <span class="status ${st.cls}"><span class="dot"></span>${st.label}</span>
+    </div>
+    <div class="p-right">
+      <button class="water-btn ${done?"done":""}" data-water="${p.id}" aria-label="Segna innaffiata">${done?"✓":"💧"}</button>
+      <span class="count-pill">ogni ${seasonalEvery(p)}g</span>
+    </div>
+  </div>`;
+}
+
+function emptyState(ico,h,p){
+  return `<div class="empty"><div class="ico">${ico}</div><h3>${h}</h3><p>${p}</p></div>`;
+}
+
+/* ---------- Calendario ---------- */
+let calView = new Date(); calView.setDate(1);
+
+function renderCal(){
+  const y = calView.getFullYear(), m = calView.getMonth();
+  $("#calLabel").textContent = MONTHS[m] + " " + y;
+  const first = new Date(y, m, 1);
+  let startDow = (first.getDay()+6)%7; // lun=0
+  const daysInMonth = new Date(y, m+1, 0).getDate();
+  const prevDays = new Date(y, m, 0).getDate();
+
+  // eventi del mese: done (log) e plan (proiezione)
+  const doneMap = {}; // iso -> [plant]
+  const planMap = {};
+  state.plants.forEach(p=>{
+    (p.history||[]).forEach(dt=>{ (doneMap[dt]=doneMap[dt]||[]).push(p); });
+    // proiezione prossime innaffiature nel mese visibile
+    let d = nextWater(p);
+    const monthEnd = iso(new Date(y, m, daysInMonth));
+    const monthStart = iso(new Date(y, m, 1));
+    let guard=0;
+    while (diffDays(d, monthEnd) <= 0 && guard<400){
+      if (diffDays(d, monthStart) >= 0 && diffDays(d, todayISO())>=0){
+        (planMap[d]=planMap[d]||[]).push(p);
+      }
+      d = addDays(d, seasonalEvery(p)); guard++;
+    }
+  });
+
+  let cells = "";
+  DOW.forEach(d=> cells += `<div class="cal-dow">${d}</div>`);
+  for (let i=0;i<startDow;i++){
+    const dn = prevDays - startDow + 1 + i;
+    cells += `<div class="cal-cell other">${dn}</div>`;
+  }
+  for (let day=1; day<=daysInMonth; day++){
+    const ciso = iso(new Date(y,m,day));
+    const isToday = ciso === todayISO();
+    const hasDone = doneMap[ciso];
+    const hasPlan = planMap[ciso];
+    let marks = "";
+    if (hasDone) marks += `<span class="m done"></span>`;
+    if (hasPlan) marks += `<span class="m plan"></span>`;
+    cells += `<div class="cal-cell ${isToday?"today":""}" data-day="${ciso}">
+      <span>${day}</span><span class="marks">${marks}</span></div>`;
+  }
+  const totalCells = startDow + daysInMonth;
+  const trail = (7 - (totalCells % 7)) % 7;
+  for (let i=1;i<=trail;i++){ cells += `<div class="cal-cell other">${i}</div>`; }
+
+  $("#calGrid").innerHTML = cells;
+  $("#calDayList").innerHTML = "";
+}
+
+function openDay(diso){
+  const doneList = state.plants.filter(p => (p.history||[]).includes(diso));
+  const isTodayOrPast = diffDays(diso, todayISO()) <= 0;
+  // plan for that day: le piante il cui giro naturale cade esattamente in
+  // quel giorno, o - per oggi/il passato - il cui prossimo giro previsto è
+  // già arrivato a quel giorno o prima (così una pianta non sparisce dalla
+  // lista di oggi solo perché, togliendo una spunta, il calcolo scivola
+  // indietro nel tempo).
+  const planList = [];
+  state.plants.forEach(p=>{
+    if (diffDays(diso, todayISO())<0 && !doneList.includes(p)) return;
+    const nw = nextWater(p);
+    if (isTodayOrPast && diso === todayISO() && diffDays(nw, diso) <= 0){ planList.push(p); return; }
+    let d = nw, guard=0;
+    while (diffDays(d, diso) <= 0 && guard<400){
+      if (d === diso){ planList.push(p); break; }
+      d = addDays(d, seasonalEvery(p)); guard++;
+    }
+  });
+  $("#dayTitle").textContent = parseISO(diso).toLocaleDateString("it-IT",{weekday:"long",day:"numeric",month:"long"});
+  let html = "";
+  const isPast = diffDays(diso, todayISO()) < 0;
+  const isFuture = diffDays(diso, todayISO()) > 0;
+
+  // Un'unica lista di spunta: piante previste per questo giorno + quelle
+  // già innaffiate quel giorno (anche se non erano "in programma", es.
+  // innaffiate in anticipo). Ogni riga è una checkbox: la spunti man mano
+  // che innaffi, la togli se hai spuntato per errore.
+  const allIds = new Set([...doneList.map(p=>p.id), ...planList.map(p=>p.id)]);
+  const rows = sortPlants(state.plants.filter(p=>allIds.has(p.id)));
+
+  if (!rows.length){
+    html += `<div class="empty" style="padding:26px 10px"><div class="ico">🗓️</div><p style="margin-top:10px">Nessuna innaffiatura in questo giorno.</p></div>`;
+  } else {
+    html += `<div class="section-label" style="margin-left:0">${isFuture?"In programma":"Spunta chi hai innaffiato"}</div><div class="day-events" id="dayCheckList">`;
+    html += rows.map(p=>{
+      const isDone = (p.history||[]).includes(diso);
+      return `<label class="day-ev day-ev-check" data-plant-day="${p.id}">
+        <input type="checkbox" class="day-check" data-plant-day-cb="${p.id}" ${isDone?"checked":""} ${isFuture?"disabled":""} />
+        <span class="em">${p.em}</span>
+        <div class="txt"><div class="t1">${esc(p.nickname||p.name)}</div><div class="t2">${isDone?esc(p.name):"ogni "+seasonalEvery(p)+" giorni"}</div></div>
+        <span class="tag ${isDone?"done":"plan"}">${isDone?"Fatto":"Previsto"}</span>
+      </label>`;
+    }).join("");
+    html += `</div>`;
+  }
+
+  // Aggiungi comunque una pianta non prevista quel giorno (facoltativo)
+  if (!isFuture && state.plants.length){
+    html += `<div style="margin-top:16px"><button class="link-btn" id="addOtherPlantBtn" style="padding:6px 0">➕ Aggiungi un'altra pianta a questo giorno</button>
+      <div id="dayOtherBox" style="display:none;margin-top:8px">
+        <select class="search" id="dayPlantSel" style="margin-bottom:10px"><option value="">Scegli una pianta…</option>
+        ${sortPlants(state.plants.filter(p=>!allIds.has(p.id))).map(p=>`<option value="${p.id}">${esc(p.nickname||p.name)}</option>`).join("")}
+        </select><button class="btn-primary" id="dayWaterBtn">💧 Segna innaffiata il ${fmtShort(diso)}</button>
+      </div></div>`;
+  }
+  $("#dayBody").innerHTML = html;
+
+  // Checkbox: spunta = innaffiata quel giorno, togli spunta = annulla
+  $$("#dayCheckList .day-check").forEach(cb=>{
+    cb.addEventListener("change", ()=>{
+      const id = cb.dataset.plantDayCb;
+      if (cb.checked) waterPlant(id, diso);
+      else unwaterPlant(id, diso);
+      openDay(diso); // ricostruisce la lista con lo stato aggiornato
+    });
+  });
+
+  const addBtn = $("#addOtherPlantBtn");
+  if (addBtn) addBtn.addEventListener("click", ()=>{
+    $("#dayOtherBox").style.display = "block";
+    addBtn.style.display = "none";
+  });
+  const btn = $("#dayWaterBtn");
+  if (btn) btn.addEventListener("click", ()=>{
+    const id = $("#dayPlantSel").value;
+    if (!id){ toast("Scegli prima una pianta"); return; }
+    waterPlant(id, diso);
+    openDay(diso);
+    toast("Innaffiatura registrata 💧");
+  });
+  openSheet("daySheet");
+}
+
+/* ---------- Azioni ---------- */
+function waterPlant(id, dateIso){
+  const p = state.plants.find(x=>x.id===id); if(!p) return;
+  const dt = dateIso || todayISO();
+  p.history = p.history || [];
+  if (!p.history.includes(dt)) p.history.push(dt);
+  p.history.sort();
+  // lastWatered = data più recente
+  p.lastWatered = p.history[p.history.length-1];
+  save(); render();
+}
+/* Togli la spunta: rimuove quella data dallo storico (per errori di flag).
+   lastWatered torna sempre a derivare dallo storico rimasto: se non resta
+   nessuna innaffiatura registrata, la pianta torna "da innaffiare" (una
+   data molto vecchia), invece di restare bloccata sulla data appena
+   annullata. */
+function unwaterPlant(id, dateIso){
+  const p = state.plants.find(x=>x.id===id); if(!p) return;
+  p.history = (p.history||[]).filter(d=>d!==dateIso);
+  p.lastWatered = p.history.length ? p.history[p.history.length-1] : addDays(todayISO(), -365);
+  save(); render();
+}
+
+function addPlant(data){
+  const p = {
+    id: uid(),
+    name: data.name, nickname: data.nickname||"", em: data.em||"🪴",
+    latin: data.latin||"", every: data.every, light: data.light,
+    tmin: data.tmin, tmax: data.tmax, diff: data.diff||"—", note: data.note||"",
+    seasonCat: data.seasonCat || "default", photo: data.photo || null,
+    roomId: data.roomId || null, lastWatered: data.lastWatered||todayISO(),
+    history: []
+  };
+  if (data.wateredToday) p.history.push(p.lastWatered);
+  state.plants.push(p); save(); render();
+}
+
+function deletePlant(id){
+  state.plants = state.plants.filter(p=>p.id!==id);
+  save(); render();
+}
+
+/* ---------- Add sheet flow ---------- */
+function openAdd(preRoomId){
+  addPreRoom = (typeof preRoomId==="string") ? preRoomId : null;
+  renderSpeciesPicker("");
+  openSheet("addSheet");
+}
+
+function careCardHTML(o){
+  const ev = seasonalEvery(o);
+  return `<div class="care-grid">
+    <div class="care-item"><div class="ci-lbl">💧 Acqua · ${seasonLabel()}</div><div class="ci-val">Ogni ${ev} giorni</div></div>
+    <div class="care-item"><div class="ci-lbl">☀️ Luce</div><div class="ci-val">${esc(o.light)}</div></div>
+    <div class="care-item"><div class="ci-lbl">🌡️ Temperatura</div><div class="ci-val">${o.tmin}–${o.tmax} °C</div></div>
+    <div class="care-item"><div class="ci-lbl">🌱 Difficoltà</div><div class="ci-val">${esc(o.diff||"—")}</div></div>
+  </div>
+  <div class="hint" style="margin:-10px 2px 12px">In ${seasonLabel().toLowerCase()} questa pianta beve ${isSummerNow()?"più spesso":"meno spesso"}; l'app aggiorna da sola la frequenza al cambio di stagione.</div>`;
+}
+const AUTO_BADGE = `<div style="display:inline-flex;align-items:center;gap:6px;background:var(--primary-soft);color:var(--primary-deep);font-size:12.5px;font-weight:600;padding:8px 13px;border-radius:999px;margin:2px 0 14px">✓ Scheda di cura compilata in automatico</div>`;
+
+const ROOM_EMOJIS = ["🛋️","🍳","🛏️","🚿","🪟","🏡","💻","🚪","📚","🌿","🪴","🏠"];
+let addPreRoom = null; // stanza preselezionata quando si aggiunge da una stanza
+
+function roomPickerHTML(selId){
+  return `<div class="field"><label>Stanza</label>
+    <select id="f_room">
+      <option value="">— Senza stanza —</option>
+      ${state.rooms.map(r=>`<option value="${r.id}" ${r.id===selId?"selected":""}>${esc(r.em||"🪴")} ${esc(r.name)}</option>`).join("")}
+      <option value="__new__">➕ Nuova stanza…</option>
+    </select>
+    <div id="f_room_new" style="display:none;margin-top:8px">
+      <div class="row2">
+        <select id="f_room_em" style="flex:0 0 78px">${ROOM_EMOJIS.map(e=>`<option>${e}</option>`).join("")}</select>
+        <input id="f_room_name" placeholder="Nome stanza (es. Soggiorno)" />
+      </div>
+    </div>
+  </div>`;
+}
+function wireRoomPicker(){
+  const sel = $("#f_room"); if (!sel) return;
+  sel.addEventListener("change", ()=>{
+    $("#f_room_new").style.display = sel.value==="__new__" ? "block" : "none";
+    if (sel.value==="__new__") { const ni=$("#f_room_name"); if(ni) ni.focus(); }
+  });
+}
+function resolveRoomId(){
+  const sel = $("#f_room"); if (!sel) return null;
+  if (sel.value==="__new__"){
+    const nm = ($("#f_room_name").value||"").trim();
+    if (!nm) return null;
+    const r = addRoom(nm, $("#f_room_em").value);
+    return r.id;
+  }
+  return sel.value || null;
+}
+
+/* Passo 1 — ricerca nel catalogo */
+function renderSpeciesPicker(q){
+  $("#addTitle").textContent = "Aggiungi una pianta";
+  const list = SPECIES.filter(s => (s.name+" "+s.latin).toLowerCase().includes(q.toLowerCase()));
+  let html = `<input class="search" id="specSearch" placeholder="🔍 Cerca la tua pianta…" value="${esc(q)}" autocomplete="off" />`;
+  html += `<button class="btn-ghost" id="photoIdBtn" style="margin:-2px 0 12px;display:flex;align-items:center;justify-content:center;gap:8px">📷 Riconosci dalla foto</button>`;
+  html += `<input type="file" id="photoIdInput" accept="image/*" capture="environment" style="display:none" />`;
+  html += `<div id="photoIdStatus" style="display:none"></div>`;
+  html += `<div class="hint" style="margin:-6px 2px 10px">${q ? list.length+" risultati" : "Catalogo di "+SPECIES.length+" piante · scegline una e la scheda si compila da sola"}</div>`;
+  html += `<div class="species-list">`;
+  html += list.map(s=>`<button class="species-row" data-spec="${s.key}">
+      <span class="em">${s.em}</span>
+      <span><span class="nm">${esc(s.name)}</span><br><span class="meta">${esc(s.latin)} · acqua ~${s.every}g</span></span>
+      <span class="go">›</span></button>`).join("");
+  if (!list.length) html += `<p class="hint" style="text-align:center;padding:14px">Nessuna corrispondenza. Prova con l'aggiunta per categoria qui sotto 👇</p>`;
+  html += `</div>`;
+  html += `<button class="btn-ghost" id="catBtn">➕ Non è in elenco? Aggiungila per categoria</button>`;
+  $("#addBody").innerHTML = html;
+  $("#addBody").scrollTop = 0;
+
+  $("#specSearch").addEventListener("input", e=>{
+    renderSpeciesPicker(e.target.value);
+    const el=$("#specSearch"); el.focus(); el.setSelectionRange(el.value.length, el.value.length);
+  });
+  $("#catBtn").addEventListener("click", renderCategoryPicker);
+  $$(".species-row").forEach(b=> b.addEventListener("click", ()=>{
+    renderConfirm(SPECIES.find(s=>s.key===b.dataset.spec));
+  }));
+
+  $("#photoIdBtn").addEventListener("click", ()=> $("#photoIdInput").click());
+  $("#photoIdInput").addEventListener("change", onPhotoIdSelected);
+}
+
+/* ---------- Riconoscimento pianta da foto (PlantNet via Netlify Function) ---------- */
+const PLANT_ID_ENDPOINT = "/.netlify/functions/identify-plant";
+
+function fileToBase64(file){
+  return new Promise((resolve, reject)=>{
+    const reader = new FileReader();
+    reader.onload = ()=> resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+async function onPhotoIdSelected(e){
+  const file = e.target.files && e.target.files[0];
+  if (!file) return;
+  const statusEl = $("#photoIdStatus");
+  if (!statusEl) return;
+  statusEl.style.display = "block";
+  statusEl.innerHTML = `<div class="note-box">🔎 Sto analizzando la foto…</div>`;
+
+  try {
+    const dataUrl = await fileToBase64(file);
+    const resp = await fetch(PLANT_ID_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ imageBase64: dataUrl, organ: "auto" })
+    });
+    const data = await resp.json();
+
+    if (!resp.ok || data.error) {
+      statusEl.innerHTML = `<div class="note-box">⚠️ ${esc(data.error || "Non sono riuscita a riconoscere la pianta. Riprova con un'altra foto o cercala manualmente qui sotto.")}</div>`;
+      return;
+    }
+
+    const results = data.results || [];
+    if (!results.length){
+      statusEl.innerHTML = `<div class="note-box">🤔 Nessun risultato. Prova con una foto più chiara (foglia o fiore ben visibile) oppure cerca la pianta manualmente qui sotto.</div>`;
+      return;
+    }
+
+    statusEl.innerHTML = `<div class="note-box"><b>Forse è una di queste piante:</b></div>` +
+      `<div class="species-list" id="photoIdResults">` +
+      results.map((r,i)=>{
+        const label = (r.commonNames && r.commonNames[0]) || r.scientificName;
+        return `<button class="species-row" data-idx="${i}">
+          <span class="em">🌿</span>
+          <span><span class="nm">${esc(label)}</span><br><span class="meta">${esc(r.scientificName)} · ${r.score}% di probabilità</span></span>
+          <span class="go">›</span></button>`;
+      }).join("") + `</div>`;
+
+    $$("#photoIdResults .species-row").forEach(b=>{
+      b.addEventListener("click", ()=>{
+        const r = results[+b.dataset.idx];
+        // Prova ad abbinare il risultato a una specie del nostro catalogo
+        // (per nome scientifico o nome comune), altrimenti apre la scheda
+        // "aggiungi per categoria" precompilata col nome trovato, chiedendo
+        // comunque conferma prima di salvare — il riconoscimento automatico
+        // non è mai certo al 100%.
+        const nameGuess = (r.commonNames && r.commonNames[0]) || r.scientificName;
+        const match = SPECIES.find(s =>
+          s.latin.toLowerCase() === r.scientificName.toLowerCase() ||
+          s.name.toLowerCase() === nameGuess.toLowerCase()
+        );
+        if (match){
+          renderConfirm(match);
+        } else {
+          renderCategoryPicker();
+          setTimeout(()=>{
+            const nameInput = $("#f_name");
+            if (nameInput) nameInput.value = nameGuess;
+          }, 0);
+        }
+      });
+    });
+  } catch (err){
+    statusEl.innerHTML = `<div class="note-box">⚠️ Errore di connessione durante il riconoscimento. Riprova, oppure cerca la pianta manualmente qui sotto.</div>`;
+  }
+}
+
+/* Passo 2A — conferma pianta dal catalogo (dati automatici, sola lettura) */
+function renderConfirm(spec){
+  $("#addTitle").textContent = spec.name;
+  let html = `<div class="detail-hero" style="margin-bottom:6px">
+      <div class="avatar">${spec.em}</div>
+      <div><div class="dn">${esc(spec.name)}</div><div class="ds">${esc(spec.latin)}</div></div>
+    </div>`;
+  html += AUTO_BADGE;
+  html += careCardHTML(spec);
+  if (spec.note) html += `<div class="note-box"><b>Consiglio.</b> ${esc(spec.note)}</div>`;
+  html += `<div class="field"><label>Come la chiami (facoltativo)</label><input id="f_nick" placeholder="${esc(spec.name)}" /></div>`;
+  html += roomPickerHTML(addPreRoom);
+  html += `<div class="field"><label>Ultima innaffiatura</label><input id="f_last" type="date" value="${todayISO()}" max="${todayISO()}" /></div>`;
+  html += `<label style="display:flex;align-items:center;gap:9px;font-size:14px;color:var(--muted);margin:6px 2px 2px">
+    <input type="checkbox" id="f_today" style="width:18px;height:18px;accent-color:var(--primary)" /> L'ho appena innaffiata oggi</label>`;
+  html += `<button class="btn-primary" id="saveBtn">Aggiungi alla mia serra</button>`;
+  html += `<button class="link-btn" id="backBtn" style="display:block;margin:8px auto 0">‹ Torna alla ricerca</button>`;
+  $("#addBody").innerHTML = html;
+  $("#addBody").scrollTop = 0;
+
+  wireRoomPicker();
+  $("#backBtn").addEventListener("click", ()=> renderSpeciesPicker(""));
+  const todayChk=$("#f_today"), lastInp=$("#f_last");
+  todayChk.addEventListener("change", ()=>{ if(todayChk.checked) lastInp.value=todayISO(); });
+  $("#saveBtn").addEventListener("click", ()=>{
+    addPlant({
+      name: spec.name, nickname:$("#f_nick").value.trim(), em:spec.em, latin:spec.latin,
+      every:spec.every, light:spec.light, tmin:spec.tmin, tmax:spec.tmax, diff:spec.diff, note:spec.note,
+      seasonCat: spec.seasonCat,
+      roomId: resolveRoomId(), lastWatered:lastInp.value||todayISO(), wateredToday:todayChk.checked
+    });
+    closeSheets(); toast("🌱 "+spec.name+" aggiunta!"); switchTab("piante");
+  });
+}
+
+/* Passo 2B — scelta categoria per piante non in elenco */
+function renderCategoryPicker(){
+  $("#addTitle").textContent = "Aggiungi per categoria";
+  let html = `<p class="hint" style="margin:2px 2px 14px;font-size:13px">Non l'hai trovata nel catalogo? Scegli il tipo che le somiglia di più: i dati di cura si compilano da soli e potrai comunque ritoccarli.</p>`;
+  html += `<div class="species-list">`;
+  html += CATEGORIES.map(c=>`<button class="species-row" data-cat="${c.key}">
+      <span class="em">${c.em}</span>
+      <span><span class="nm">${esc(c.name)}</span><br><span class="meta">acqua ~${c.every}g · ${esc(c.light)}</span></span>
+      <span class="go">›</span></button>`).join("");
+  html += `</div>`;
+  html += `<button class="link-btn" id="backBtn" style="display:block;margin:10px auto 0">‹ Torna alla ricerca</button>`;
+  $("#addBody").innerHTML = html;
+  $("#addBody").scrollTop = 0;
+  $("#backBtn").addEventListener("click", ()=> renderSpeciesPicker(""));
+  $$(".species-row").forEach(b=> b.addEventListener("click", ()=>{
+    renderCustom(CATEGORIES.find(c=>c.key===b.dataset.cat));
+  }));
+}
+
+/* Passo 3 — nuova pianta (nome + dati precompilati dalla categoria, modificabili) */
+function renderCustom(base){
+  $("#addTitle").textContent = "Nuova pianta";
+  const s = base || CATEGORIES[CATEGORIES.length-1];
+  const emOpts = ["🪴","🌿","🌱","🍃","🌵","🌸","🌺","🌳","🌴","🍀","🗡️","💜","🌷","🪻","🌼","🍅","🌶️","🍓","🤍","🍁"];
+  let lightOpts = ["Diretta","Luminosa","Luminosa / diretta","Indiretta luminosa","Indiretta","Bassa / indiretta","Indiretta / mezz'ombra","Mezz'ombra luminosa","Luminosa fresca"];
+  if (!lightOpts.includes(s.light)) lightOpts.unshift(s.light);
+  if (!emOpts.includes(s.em)) emOpts.unshift(s.em);
+  const diffOpts = ["Facilissima","Facile","Media","Impegnativa"];
+  let html = `<div class="note-box" style="background:var(--primary-soft);margin-bottom:14px"><b>Precompilata come «${esc(s.name)}».</b> Cambia solo il nome se ti basta così, oppure ritocca i valori qui sotto.</div>`;
+  html += `<div class="field"><label>Nome della pianta *</label><input id="f_name" placeholder="Es. Felce di Boston" /></div>`;
+  html += `<div class="field"><label>Come la chiami (facoltativo)</label><input id="f_nick" placeholder="Un soprannome" /></div>`;
+  html += `<div class="field"><label>Icona</label><select id="f_em">${emOpts.map(e=>`<option ${e===s.em?"selected":""}>${e}</option>`).join("")}</select></div>`;
+  html += roomPickerHTML(addPreRoom);
+  html += `<div class="row2">
+    <div class="field"><label>Acqua ogni (giorni)</label><input id="f_every" type="number" min="1" max="120" value="${s.every}" /></div>
+    <div class="field"><label>Luce</label><select id="f_light">${lightOpts.map(o=>`<option ${o===s.light?"selected":""}>${esc(o)}</option>`).join("")}</select></div>
+  </div>`;
+  html += `<div class="row2">
+    <div class="field"><label>Temp. min °C</label><input id="f_tmin" type="number" value="${s.tmin}" /></div>
+    <div class="field"><label>Temp. max °C</label><input id="f_tmax" type="number" value="${s.tmax}" /></div>
+  </div>`;
+  html += `<div class="field"><label>Difficoltà</label><select id="f_diff">${diffOpts.map(o=>`<option ${o===s.diff?"selected":""}>${o}</option>`).join("")}</select></div>`;
+  html += `<div class="field"><label>Nota di cura</label><input id="f_note" value="${esc(s.note)}" /></div>`;
+  html += `<div class="field"><label>Ultima innaffiatura</label><input id="f_last" type="date" value="${todayISO()}" max="${todayISO()}" /></div>`;
+  html += `<label style="display:flex;align-items:center;gap:9px;font-size:14px;color:var(--muted);margin:6px 2px 2px">
+    <input type="checkbox" id="f_today" style="width:18px;height:18px;accent-color:var(--primary)" /> L'ho appena innaffiata oggi</label>`;
+  html += `<button class="btn-primary" id="saveBtn">Aggiungi alla mia serra</button>`;
+  html += `<button class="link-btn" id="backBtn" style="display:block;margin:8px auto 0">‹ Torna alle categorie</button>`;
+  $("#addBody").innerHTML = html;
+  $("#addBody").scrollTop = 0;
+
+  wireRoomPicker();
+  $("#backBtn").addEventListener("click", renderCategoryPicker);
+  const todayChk=$("#f_today"), lastInp=$("#f_last");
+  todayChk.addEventListener("change", ()=>{ if(todayChk.checked) lastInp.value=todayISO(); });
+  $("#saveBtn").addEventListener("click", ()=>{
+    const name = $("#f_name").value.trim();
+    if (!name){ toast("Dai un nome alla pianta"); $("#f_name").focus(); return; }
+    addPlant({
+      name, nickname:$("#f_nick").value.trim(), em:$("#f_em").value, latin:"",
+      every:Math.max(1, parseInt($("#f_every").value)||7), light:$("#f_light").value,
+      tmin:parseInt($("#f_tmin").value), tmax:parseInt($("#f_tmax").value),
+      diff:$("#f_diff").value, note:$("#f_note").value.trim(), seasonCat: s.seasonCat,
+      roomId: resolveRoomId(), lastWatered:lastInp.value||todayISO(), wateredToday:todayChk.checked
+    });
+    closeSheets(); toast("🌱 "+name+" aggiunta!"); switchTab("piante");
+  });
+}
+
+/* ---------- Gestione stanze ---------- */
+function openRooms(){ renderRooms(); openSheet("roomSheet"); }
+function renderRooms(){
+  let html = `<p class="hint" style="margin:0 2px 14px;font-size:13px">Crea le stanze di casa e poi assegna le piante a ciascuna. Eliminando una stanza le sue piante restano, spostate in «Senza stanza».</p>`;
+  if (state.rooms.length){
+    html += `<div class="rooms-manage">`;
+    html += state.rooms.map(r=>{
+      const n = state.plants.filter(p=>p.roomId===r.id).length;
+      return `<div class="room-row" data-room="${r.id}">
+        <select class="rr-em" aria-label="Icona stanza">${ROOM_EMOJIS.concat(ROOM_EMOJIS.includes(r.em)?[]:[r.em]).map(e=>`<option ${e===r.em?"selected":""}>${e}</option>`).join("")}</select>
+        <input class="rr-name" value="${esc(r.name)}" />
+        <span class="rr-count">${n} 🪴</span>
+        <button class="rr-del" aria-label="Elimina stanza">🗑</button>
+      </div>`;
+    }).join("");
+    html += `</div>`;
+  } else {
+    html += `<div class="room-empty" style="margin-bottom:6px">Nessuna stanza ancora.</div>`;
+  }
+  html += `<div class="section-label" style="margin-left:0">Nuova stanza</div>`;
+  html += `<div class="row2">
+    <select id="newRoomEm" style="flex:0 0 78px">${ROOM_EMOJIS.map(e=>`<option>${e}</option>`).join("")}</select>
+    <input id="newRoomName" class="rr-name" placeholder="Es. Soggiorno, Balcone…" />
+  </div>`;
+  html += `<button class="btn-primary" id="addRoomBtn">➕ Aggiungi stanza</button>`;
+  html += `<button class="btn-ghost" id="doneRoomsBtn">Fatto</button>`;
+  $("#roomBody").innerHTML = html;
+  $("#roomBody").scrollTop = 0;
+
+  // salva nome/emoji al volo
+  $$("#roomBody .room-row").forEach(row=>{
+    const id = row.dataset.room;
+    const nameInp = row.querySelector(".rr-name");
+    const emSel = row.querySelector(".rr-em");
+    const persist = ()=>{
+      const r = roomById(id); if(!r) return;
+      const nm = nameInp.value.trim(); if (nm) r.name = nm;
+      r.em = emSel.value; save(); renderOggi(); renderPiante();
+    };
+    nameInp.addEventListener("change", persist);
+    nameInp.addEventListener("blur", persist);
+    emSel.addEventListener("change", persist);
+    row.querySelector(".rr-del").addEventListener("click", ()=>{
+      const r = roomById(id);
+      deleteRoom(id); renderRooms(); renderOggi(); renderPiante();
+      toast("Stanza «"+(r?r.name:"")+"» eliminata");
+    });
+  });
+  const addBtn = $("#addRoomBtn");
+  addBtn.addEventListener("click", ()=>{
+    const nm = $("#newRoomName").value.trim();
+    if (!nm){ toast("Scrivi il nome della stanza"); $("#newRoomName").focus(); return; }
+    addRoom(nm, $("#newRoomEm").value);
+    renderRooms(); renderPiante();
+    toast("🏠 Stanza «"+nm+"» creata");
+  });
+  $("#doneRoomsBtn").addEventListener("click", closeSheets);
+}
+
+/* ---------- Detail sheet ---------- */
+function openDetail(id){
+  const p = state.plants.find(x=>x.id===id); if(!p) return;
+  const st = plantStatus(p);
+  const nw = nextWater(p);
+  const nwLabel = st.days<0 ? "in ritardo di "+(-st.days)+"g" : st.days===0 ? "oggi" : "il "+fmtShort(nw);
+  const rl = roomLabel(p.roomId);
+  let html = `<div class="detail-hero">
+      <button class="avatar-edit" id="avatarEditBtn" aria-label="Cambia foto della pianta" style="border:none;padding:0;background:none;position:relative">
+        ${avatarHTML(p)}
+        <span class="avatar-cam">📷</span>
+      </button>
+      <input type="file" id="photoInput" accept="image/*" capture="environment" style="display:none" />
+      <div style="flex:1;min-width:0">
+      <div style="display:flex;align-items:center;gap:8px">
+        <div class="dn" id="d_nickView">${esc(p.nickname||p.name)}</div>
+        <button class="link-btn" id="editNickBtn" aria-label="Modifica soprannome" style="padding:2px;font-size:14px;flex:none">✏️</button>
+      </div>
+      <div id="d_nickEdit" style="display:none;gap:8px;align-items:center;margin:2px 0">
+        <input id="d_nickInput" placeholder="${esc(p.name)}" value="${esc(p.nickname||"")}" style="flex:1;border:1px solid var(--border-strong);background:var(--surface-2);border-radius:10px;padding:8px 10px;font-size:16px;color:var(--ink)" />
+        <button class="link-btn" id="saveNickBtn" style="font-size:13px;flex:none">Salva</button>
+      </div>
+      <div class="ds">${esc(p.latin||p.name)}${rl?" — "+esc(rl):""}</div>
+      <button class="link-btn" id="photoLinkBtn" style="padding:2px 0;font-size:12.5px">${p.photo?"Cambia foto":"📷 Aggiungi una tua foto"}</button></div>
+    </div>`;
+  html += careCardHTML(p);
+  if (p.note) html += `<div class="note-box"><b>Consiglio.</b> ${esc(p.note)}</div>`;
+  html += `<div class="next-line"><span>Prossima innaffiatura</span><span class="nv" style="color:var(${st.key==='late'?'--warn':st.key==='today'?'--water':'--primary-deep'})">${nwLabel}</span></div>`;
+
+  const done = p.lastWatered===todayISO();
+  html += `<button class="btn-primary" data-water="${p.id}" style="background:var(--water)">${done?"✓ Già innaffiata oggi":"💧 Segna innaffiata oggi"}</button>`;
+
+  // stanza
+  html += `<div class="field" style="margin-top:16px"><label>Stanza</label>
+    <select id="d_room">
+      <option value="" ${!p.roomId?"selected":""}>— Senza stanza —</option>
+      ${state.rooms.map(r=>`<option value="${r.id}" ${r.id===p.roomId?"selected":""}>${esc(r.em||"🪴")} ${esc(r.name)}</option>`).join("")}
+    </select>
+    ${state.rooms.length?"":`<div class="hint">Crea le stanze da «🏠 Stanze» nella schermata Piante.</div>`}</div>`;
+
+  // storico
+  const hist = (p.history||[]).slice().reverse().slice(0,6);
+  if (hist.length){
+    html += `<div class="section-label" style="margin-left:0">Ultime innaffiature</div><div class="history">`;
+    html += hist.map(d=>`<div class="h-item"><span class="hd"></span>${fmtLong(d)}</div>`).join("");
+    html += `</div>`;
+  } else {
+    html += `<p class="hint" style="text-align:center;margin-top:16px">Nessuna innaffiatura registrata finora.</p>`;
+  }
+  html += `<button class="btn-ghost danger" data-del="${p.id}" style="margin-top:18px">🗑 Rimuovi pianta</button>`;
+  $("#detailBody").innerHTML = html;
+  $("#detailBody").scrollTop = 0;
+
+  $("#detailBody").querySelector("[data-water]").addEventListener("click", ()=>{
+    waterPlant(p.id); openDetail(p.id); toast("Innaffiata! 💧");
+  });
+  const nickView = $("#d_nickView"), nickEdit = $("#d_nickEdit"), nickInput = $("#d_nickInput");
+  $("#editNickBtn").addEventListener("click", ()=>{
+    nickView.style.display = "none";
+    nickEdit.style.display = "flex";
+    nickInput.focus();
+    nickInput.setSelectionRange(nickInput.value.length, nickInput.value.length);
+  });
+  const saveNick = ()=>{
+    const val = nickInput.value.trim();
+    p.nickname = val;
+    save();
+    nickView.textContent = p.nickname || p.name;
+    nickView.style.display = "";
+    nickEdit.style.display = "none";
+    renderOggi(); renderPiante();
+    toast("Soprannome aggiornato ✏️");
+  };
+  $("#saveNickBtn").addEventListener("click", saveNick);
+  nickInput.addEventListener("keydown", e=>{ if (e.key==="Enter"){ e.preventDefault(); saveNick(); } });
+  const photoInput = $("#photoInput");
+  const openPhotoPicker = ()=> photoInput.click();
+  $("#avatarEditBtn").addEventListener("click", openPhotoPicker);
+  $("#photoLinkBtn").addEventListener("click", openPhotoPicker);
+  photoInput.addEventListener("change", ()=>{
+    const file = photoInput.files && photoInput.files[0];
+    if (!file) return;
+    resizeImageToDataURL(file, 480).then(dataUrl=>{
+      p.photo = dataUrl; save(); openDetail(p.id); renderOggi(); renderPiante();
+      toast("📷 Foto aggiornata");
+    }).catch(()=> toast("Non sono riuscito a leggere la foto"));
+  });
+  const droom = $("#d_room");
+  if (droom) droom.addEventListener("change", ()=>{
+    p.roomId = droom.value || null; save();
+    renderOggi(); renderPiante();
+    const nr = roomLabel(p.roomId);
+    toast(nr ? "Spostata in "+nr : "Rimossa dalla stanza");
+  });
+  $("#detailBody").querySelector("[data-del]").addEventListener("click", ()=>{
+    delTarget = p.id; confirmDelete(p);
+  });
+  openSheet("detailSheet");
+}
+
+let delTarget = null;
+function confirmDelete(p){
+  const body = $("#detailBody");
+  const bar = document.createElement("div");
+  bar.innerHTML = `<div class="note-box" style="background:var(--warn-soft);margin-top:14px">
+     Vuoi davvero rimuovere <b>${esc(p.nickname||p.name)}</b>? L'operazione non è reversibile.
+     <div style="display:flex;gap:10px;margin-top:12px">
+       <button class="btn-ghost" id="cancelDel" style="margin:0;flex:1">Annulla</button>
+       <button class="btn-primary" id="okDel" style="margin:0;flex:1;background:var(--warn)">Rimuovi</button>
+     </div></div>`;
+  body.appendChild(bar);
+  body.scrollTop = body.scrollHeight;
+  $("#cancelDel").addEventListener("click", ()=> bar.remove());
+  $("#okDel").addEventListener("click", ()=>{
+    deletePlant(p.id); closeSheets(); toast("Pianta rimossa");
+  });
+}
+
+/* ---------- Sheets ---------- */
+function openSheet(id){
+  $("#scrim").classList.add("open");
+  $("#"+id).classList.add("open");
+  window.__scrollY = window.scrollY || document.documentElement.scrollTop || 0;
+  document.body.style.position="fixed";
+  document.body.style.top = -window.__scrollY + "px";
+  document.body.style.left = "0";
+  document.body.style.right = "0";
+  document.body.style.width = "100%";
+  document.body.style.overflow="hidden";
+}
+function closeSheets(){
+  $("#scrim").classList.remove("open");
+  document.querySelectorAll(".sheet").forEach(s=>s.classList.remove("open"));
+  document.body.style.position="";
+  document.body.style.top="";
+  document.body.style.left="";
+  document.body.style.right="";
+  document.body.style.width="";
+  document.body.style.overflow="";
+  window.scrollTo(0, window.__scrollY || 0);
+}
+
+/* ---------- Tabs ---------- */
+function switchTab(tab){
+  document.querySelectorAll(".tab").forEach(t=> t.classList.toggle("active", t.dataset.tab===tab));
+  $("#screen-oggi").classList.toggle("hidden", tab!=="oggi");
+  $("#screen-piante").classList.toggle("hidden", tab!=="piante");
+  $("#screen-cal").classList.toggle("hidden", tab!=="cal");
+  if (tab==="cal") renderCal();
+  document.querySelector(".screen:not(.hidden)").scrollTop = 0;
+}
+
+/* ---------- Toast ---------- */
+let toastT;
+function toast(msg){
+  const t=$("#toast"); t.textContent=msg; t.classList.add("show");
+  clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove("show"), 2200);
+}
+
+/* ---------- Theme ---------- */
+function applyTheme(){
+  if (state.theme) document.documentElement.setAttribute("data-theme", state.theme);
+  else document.documentElement.removeAttribute("data-theme");
+}
+function toggleTheme(){
+  const cur = document.documentElement.getAttribute("data-theme");
+  const isDark = cur ? cur==="dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+  state.theme = isDark ? "light" : "dark";
+  applyTheme(); save();
+}
+
+/* ---------- Utils ---------- */
+function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+function $$(s){ return Array.from(document.querySelectorAll(s)); }
+
+/* ---------- Events ---------- */
+function bind(){
+  document.querySelectorAll(".tab").forEach(t=> t.addEventListener("click", ()=> switchTab(t.dataset.tab)));
+  $("#fab").addEventListener("click", openAdd);
+  $("#themeBtn").addEventListener("click", toggleTheme);
+  $("#scrim").addEventListener("click", closeSheets);
+  document.querySelectorAll("[data-close]").forEach(b=> b.addEventListener("click", closeSheets));
+  $("#calPrev").addEventListener("click", ()=>{ calView.setMonth(calView.getMonth()-1); renderCal(); });
+  $("#calNext").addEventListener("click", ()=>{ calView.setMonth(calView.getMonth()+1); renderCal(); });
+
+  // delega click su card / water / day
+  document.body.addEventListener("click", e=>{
+    const w = e.target.closest("[data-water]");
+    if (w && w.classList.contains("water-btn")){
+      e.stopPropagation();
+      waterPlant(w.dataset.water);
+      toast("Innaffiata! 💧");
+      return;
+    }
+    const card = e.target.closest("[data-plant]");
+    if (card){ openDetail(card.dataset.plant); return; }
+    const day = e.target.closest("[data-day]");
+    if (day){ openDay(day.dataset.day); return; }
+  });
+
+  document.body.addEventListener("keydown", e=>{
+    if ((e.key==="Enter"||e.key===" ")){
+      const card = e.target.closest("[data-plant]");
+      if (card){ e.preventDefault(); openDetail(card.dataset.plant); }
+    }
+  });
+  document.addEventListener("keydown", e=>{ if(e.key==="Escape") closeSheets(); });
+}
+
+/* ---------- Init ---------- */
+load();
+applyTheme();
+bind();
+render();
+initSharedStorage(); // asincrono: quando risolve, aggiorna solo il badge in alto
+</script>
